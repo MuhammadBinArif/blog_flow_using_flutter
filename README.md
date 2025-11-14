@@ -1,2 +1,2 @@
-# blog_flow_using_flutter
-BlogFlow: A sleek and modern Flutter application that seamlessly streams your blog content. Navigate effortlessly through a curated list of articles and dive into the full story with a clean, focused reading experience. Built for performance and simplicity.
+# blog_app_flutter
+ Created a simple blog app with firebase with auth, firestore,storage.
