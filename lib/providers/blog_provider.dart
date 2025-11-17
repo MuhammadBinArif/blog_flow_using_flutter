@@ -38,13 +38,15 @@ class BlogProvider extends ChangeNotifier {
         "createdAt": FieldValue.serverTimestamp(),
       });
 
-      // Update local model with firestore generated Id
       final newBlog = blog.copyWith(id: docRef.id);
       _blogs.add(newBlog);
       notifyListeners();
     } catch (e) {
-      if (kDebugMode) {
-        print("Error fetching blogs:$e");
+      // Handle FirebaseException specifically
+      if (e is FirebaseException) {
+        print("Firestore error: ${e.code} - ${e.message}");
+      } else {
+        print("Unexpected error: $e");
       }
     }
   }
