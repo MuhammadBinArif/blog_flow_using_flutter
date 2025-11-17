@@ -1,6 +1,8 @@
 import 'package:blog_app_flutter/model/blog_model.dart';
+import 'package:blog_app_flutter/providers/blog_provider.dart';
 import 'package:blog_app_flutter/widgets/form_field_bottom_sheet.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class AddBlogBottomSheet extends StatefulWidget {
   const AddBlogBottomSheet({super.key});
@@ -31,19 +33,19 @@ class _AddBlogBottomSheetState extends State<AddBlogBottomSheet> {
     return null; // Return null if valid
   }
 
-  void _addToBlogList() {
-    // This will automatically validate all fields and show errors
+  void _addToBlogList() async {
     if (_formKey.currentState!.validate()) {
-      // Only executed if ALL fields are valid
+      final provider = Provider.of<BlogProvider>(context, listen: false);
+
       BlogModel newBlog = BlogModel(
         title: _titleController.text,
         subtitle: _subtitleController.text,
         authorName: _authorNameController.text,
       );
 
-      blog.add(newBlog);
+      await provider.addBlog(newBlog); // Adds to Firestore and notifies
 
-      Navigator.of(context).pop();
+      Navigator.of(context).pop(); // Close bottom sheet
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           backgroundColor: Color(0xFF606c38),
@@ -54,8 +56,34 @@ class _AddBlogBottomSheetState extends State<AddBlogBottomSheet> {
         ),
       );
     }
-    // If validation fails, errors automatically show below each field
   }
+
+  // void _addToBlogList() {
+  //   // This will automatically validate all fields and show errors
+  //   if (_formKey.currentState!.validate()) {
+  //     // Only executed if ALL fields are valid
+  //     BlogModel newBlog = BlogModel(
+  //       title: _titleController.text,
+  //       subtitle: _subtitleController.text,
+  //       authorName: _authorNameController.text,
+  //       id: '',
+  //     );
+
+  //     blog.add(newBlog);
+
+  //     Navigator.of(context).pop();
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       SnackBar(
+  //         backgroundColor: Color(0xFF606c38),
+  //         content: Text(
+  //           "Blog added successfully!",
+  //           style: TextStyle(color: Color(0xFFecf39e)),
+  //         ),
+  //       ),
+  //     );
+  //   }
+  //   // If validation fails, errors automatically show below each field
+  // }
 
   @override
   Widget build(BuildContext context) {

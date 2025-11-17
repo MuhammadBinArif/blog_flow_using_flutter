@@ -1,8 +1,10 @@
 import 'package:blog_app_flutter/model/blog_model.dart';
+import 'package:blog_app_flutter/providers/blog_provider.dart';
 import 'package:blog_app_flutter/widgets/add_blog_container.dart';
 import 'package:blog_app_flutter/widgets/my_blog_card.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -11,7 +13,25 @@ class MainPage extends StatefulWidget {
   State<MainPage> createState() => _MainPageState();
 }
 
+@override
+Widget build(BuildContext context) {
+  return Container(); // Your widget content
+}
+
 class _MainPageState extends State<MainPage> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _initializeBlogs();
+    });
+  }
+
+  void _initializeBlogs() {
+    final blogProvider = Provider.of<BlogProvider>(context, listen: false);
+    blogProvider.listenToBlogs();
+  }
+
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
@@ -94,18 +114,22 @@ class _MainPageState extends State<MainPage> {
           children: [
             // SizedBox(height: height * 0.03),
             AddBlogContainer(),
+
             // width: width,
             //   height: height * 0.67,
+
+            // Initialize listening your blog listing screen
             ListView.builder(
               shrinkWrap: true,
               physics: NeverScrollableScrollPhysics(),
-              itemCount: blog.length,
+              itemCount: Provider.of<BlogProvider>(context).blogs.length,
               itemBuilder: (context, index) {
                 return MyBlogCard(
                   title: blog[index].title,
                   subtitle: blog[index].subtitle,
                   authorName: blog[index].authorName,
                 );
+
                 // ListView(
                 //   children: [
                 //     MyBlogCard(

@@ -1,7 +1,70 @@
 import 'package:blog_app_flutter/model/blog_model.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class BlogProvider extends ChangeNotifier {
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  List<BlogModel> _blogs = [];
+  List<BlogModel> get blogs => _blogs;
+
+  // Fetch blogs from firestore
+  Future<void> fetchBlogs() async {
+    try {
+      final snapshot = await _firestore.collection("blogs").get();
+      _blogs = snapshot.docs.map((doc) {
+        final data = doc.data();
+        return BlogModel(
+          id: doc.id,
+          title: data["title"],
+          subtitle: data["subtitle"],
+          authorName: data["authorName"],
+        );
+      }).toList();
+      notifyListeners();
+    } catch (e) {
+      if (kDebugMode) print("Error fetching blogs :$e");
+    }
+  }
+
+  // Add a new blog to firestore
+  Future<void> addBlog(BlogModel blog) async {
+    try {
+      final docRef = await _firestore.collection("blogs").add({
+        "title": blog.title,
+        "subtitle": blog.subtitle,
+        "authorName": blog.authorName,
+        "createdAt": FieldValue.serverTimestamp(),
+      });
+
+      // Update local model with firestore generated Id
+      final newBlog = blog.copyWith(id: docRef.id);
+      _blogs.add(newBlog);
+      notifyListeners();
+    } catch (e) {
+      if (kDebugMode) {
+        print("Error fetching blogs:$e");
+      }
+    }
+  }
+
+  // Listen for real time updates(Optional)
+  void listenToBlogs() {
+    _firestore.collection("blogs").snapshots().listen((snapshot) {
+      _blogs = snapshot.docs.map((doc) {
+        final data = doc.data();
+        return BlogModel(
+          id: doc.id,
+          title: data["title"],
+          subtitle: data["subtitle"],
+          authorName: data["authorName"],
+        );
+      }).toList();
+      notifyListeners();
+    });
+  }
+
   void uploadBlog(BlogModel blog) {
     // use firebase firestore to upload the data
   }
