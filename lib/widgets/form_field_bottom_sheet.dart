@@ -18,6 +18,7 @@ class FormFieldBottomSheet extends StatelessWidget {
     required this.fontWeight,
     required this.controller,
     required this.validator,
+    required Null Function(dynamic value) onFieldSubmitted,
   });
 
   @override

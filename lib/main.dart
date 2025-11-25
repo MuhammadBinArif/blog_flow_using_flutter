@@ -19,10 +19,13 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: ChangeNotifierProvider(
-        create: (context) => BlogProvider(),
-        child: MainPage(),
+    return MultiProvider(
+      providers: [ChangeNotifierProvider(create: (_) => BlogProvider())],
+      child: MaterialApp(
+        home: ChangeNotifierProvider(
+          create: (context) => BlogProvider(),
+          child: MainPage(),
+        ),
       ),
     );
   }

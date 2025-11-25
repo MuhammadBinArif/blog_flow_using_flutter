@@ -135,6 +135,9 @@ class _AddBlogBottomSheetState extends State<AddBlogBottomSheet> {
                   fontWeight: FontWeight.bold,
                   validator: (value) =>
                       _validateField(value, 'title'), // Add validator
+                  onFieldSubmitted: (value) {
+                    _formKey.currentState?.validate();
+                  },
                 ),
                 SizedBox(height: height * 0.02),
 
@@ -146,6 +149,9 @@ class _AddBlogBottomSheetState extends State<AddBlogBottomSheet> {
                   fontWeight: FontWeight.w700,
                   validator: (value) =>
                       _validateField(value, 'subtitle'), // Add validator
+                  onFieldSubmitted: (value) {
+                    _formKey.currentState?.validate();
+                  },
                 ),
                 SizedBox(height: height * 0.02),
 
@@ -157,6 +163,9 @@ class _AddBlogBottomSheetState extends State<AddBlogBottomSheet> {
                   fontWeight: FontWeight.w800,
                   validator: (value) =>
                       _validateField(value, 'author name'), // Add validator
+                  onFieldSubmitted: (value) {
+                    _formKey.currentState?.validate();
+                  },
                 ),
 
                 SizedBox(height: height * 0.175),
