@@ -1,19 +1,17 @@
-import 'package:blog_app_flutter/pages/home_page.dart';
+import 'package:blog_app_flutter/pages/main_page.dart';
 import 'package:blog_app_flutter/providers/blog_provider.dart';
-import 'package:blog_app_flutter/widgets/add_blog_container.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'firebase_options.dart'; // Import Firebase options
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
-  runApp(
-    ChangeNotifierProvider(
-      create: (context) => BlogProvider()..fetchBlogs(),
-      child: const MyApp(),
-    ),
-  );
+
+  // Initialize Firebase with options
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -22,14 +20,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+      home: ChangeNotifierProvider(
+        create: (context) => BlogProvider(),
+        child: MainPage(),
       ),
-      debugShowCheckedModeBanner: false,
-      home:
-          // const AddBlogContainer(),
-          const HomePage(),
     );
   }
 }

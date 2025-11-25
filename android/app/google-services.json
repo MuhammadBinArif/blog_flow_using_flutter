@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "607188048170",
+    "firebase_url": "https://blog-flow-using-flutter-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "blog-flow-using-flutter",
+    "storage_bucket": "blog-flow-using-flutter.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:607188048170:android:debf99f4989848b60d2653",
+        "android_client_info": {
+          "package_name": "com.example.blog_app_flutter"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDope-z57y4gR6rb9aOrjHLCy4-E5SUMFI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -34,27 +34,37 @@ class _AddBlogBottomSheetState extends State<AddBlogBottomSheet> {
   }
 
   void _addToBlogList() async {
-    if (_formKey.currentState!.validate()) {
-      final provider = Provider.of<BlogProvider>(context, listen: false);
+    if (_formKey.currentState?.validate() ?? false) {
+      try {
+        final provider = Provider.of<BlogProvider>(context, listen: false);
 
-      BlogModel newBlog = BlogModel(
-        title: _titleController.text,
-        subtitle: _subtitleController.text,
-        authorName: _authorNameController.text,
-      );
+        BlogModel newBlog = BlogModel(
+          title: _titleController.text,
+          subtitle: _subtitleController.text,
+          authorName: _authorNameController.text,
+          id: "",
+        );
 
-      await provider.addBlog(newBlog); // Adds to Firestore and notifies
+        await provider.addBlog(newBlog); // Adds to Firestore and notifies
 
-      Navigator.of(context).pop(); // Close bottom sheet
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          backgroundColor: Color(0xFF606c38),
-          content: Text(
-            "Blog added successfully!",
-            style: TextStyle(color: Color(0xFFecf39e)),
+        Navigator.of(context).pop(); // Close bottom sheet
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: Color(0xFF606c38),
+            content: Text(
+              "Blog added successfully!",
+              style: TextStyle(color: Color(0xFFecf39e)),
+            ),
           ),
-        ),
-      );
+        );
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: Colors.red,
+            content: Text("Failed to add blog: $e"),
+          ),
+        );
+      }
     }
   }
 
