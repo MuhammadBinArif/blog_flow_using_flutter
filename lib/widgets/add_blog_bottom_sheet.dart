@@ -1,6 +1,7 @@
 import 'package:blog_app_flutter/model/blog_model.dart';
 import 'package:blog_app_flutter/providers/blog_provider.dart';
 import 'package:blog_app_flutter/widgets/form_field_bottom_sheet.dart';
+import 'package:blog_app_flutter/widgets/text_field_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -16,12 +17,14 @@ class _AddBlogBottomSheetState extends State<AddBlogBottomSheet> {
   final _titleController = TextEditingController();
   final _subtitleController = TextEditingController();
   final _authorNameController = TextEditingController();
+  final _blogContentController = TextEditingController();
 
   @override
   void dispose() {
     _titleController.dispose();
     _subtitleController.dispose();
     _authorNameController.dispose();
+    _blogContentController.dispose();
     super.dispose();
   }
 
@@ -42,6 +45,7 @@ class _AddBlogBottomSheetState extends State<AddBlogBottomSheet> {
           title: _titleController.text,
           subtitle: _subtitleController.text,
           authorName: _authorNameController.text,
+          blogContent: _blogContentController.text,
           id: "",
         );
 
@@ -167,8 +171,48 @@ class _AddBlogBottomSheetState extends State<AddBlogBottomSheet> {
                     _formKey.currentState?.validate();
                   },
                 ),
+                SizedBox(height: height * 0.01),
+                // Elevated button to add an image
+                ElevatedButton(
+                  onPressed: () {},
+                  child: const Text("Add an image"),
+                ),
+                SizedBox(height: height * 0.01),
+                // Text field for blog content
+                TextFieldBottomSheet(
+                  controller: _blogContentController,
+                  hintText: "Blog content",
+                ),
 
-                SizedBox(height: height * 0.175),
+                // Container(
+                //   height:
+                //       MediaQuery.of(context).size.height - kToolbarHeight * 0.1,
+                //   padding: EdgeInsets.all(16),
+                //   decoration: BoxDecoration(
+                //     color: Color.fromARGB(255, 226, 234, 134),
+                //     borderRadius: BorderRadius.circular(10),
+                //   ),
+                //   child: SingleChildScrollView(
+                //     child: Column(
+                //       children: [
+                //         TextFormField(
+                //           cursorColor: const Color(0xFF90a955),
+                //           controller: _blogContentController,
+                //           decoration: InputDecoration(
+                //             hintText: "Blog content",
+                //             border: InputBorder.none,
+                //             hintStyle: TextStyle(
+                //               color: const Color(0xFF283618),
+                //               fontSize: 18,
+                //             ),
+                //           ),
+                //           maxLines: null,
+                //         ),
+                //       ],
+                //     ),
+                //   ),
+                // ),
+                SizedBox(height: height * 0.02),
                 GestureDetector(
                   onTap: _addToBlogList, // This will trigger validation
                   child: Container(
