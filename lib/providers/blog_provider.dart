@@ -20,6 +20,7 @@ class BlogProvider extends ChangeNotifier {
           subtitle: data["subtitle"],
           authorName: data["authorName"],
           blogContent: data["blogContent"],
+          imagePath: data["imagePath"],
         );
       }).toList();
       notifyListeners();
@@ -64,6 +65,7 @@ class BlogProvider extends ChangeNotifier {
             subtitle: data["subtitle"] ?? "",
             authorName: data["authorName"] ?? "",
             blogContent: data["blogContent"] ?? "",
+            imagePath: data["imagePath"] ?? "",
           );
         }).toList();
         notifyListeners();

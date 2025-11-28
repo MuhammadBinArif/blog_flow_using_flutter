@@ -1,8 +1,14 @@
+import 'dart:io' show File;
+
 import 'package:blog_app_flutter/model/blog_model.dart';
+import 'package:blog_app_flutter/pages/image_helper.dart';
+import 'package:blog_app_flutter/pages/image_picker_screen.dart';
 import 'package:blog_app_flutter/providers/blog_provider.dart';
 import 'package:blog_app_flutter/widgets/form_field_bottom_sheet.dart';
 import 'package:blog_app_flutter/widgets/text_field_bottom_sheet.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 class AddBlogBottomSheet extends StatefulWidget {
@@ -18,6 +24,10 @@ class _AddBlogBottomSheetState extends State<AddBlogBottomSheet> {
   final _subtitleController = TextEditingController();
   final _authorNameController = TextEditingController();
   final _blogContentController = TextEditingController();
+  final ImagePickerScreen _pickImage = ImagePickerScreen();
+
+  // Add this variable to store the selected image
+  File? _selectedImage;
 
   @override
   void dispose() {
@@ -36,6 +46,46 @@ class _AddBlogBottomSheetState extends State<AddBlogBottomSheet> {
     return null; // Return null if valid
   }
 
+  // Method to pick image from camera
+  Future<void> _pickImageFromCamera() async {
+    try {
+      final image = await ImageHelper.pickImageFromCamera();
+      if (image != null) {
+        setState(() {
+          _selectedImage = image;
+        });
+        Navigator.of(context).pop(); // Close the dialog
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: Colors.red,
+          content: Text("Failed to capture image: $e"),
+        ),
+      );
+    }
+  }
+
+  // Method to pick image from gallery
+  Future<void> _pickImageFromGallery() async {
+    try {
+      final image = await ImageHelper.pickImageFromGallery();
+      if (image != null) {
+        setState(() {
+          _selectedImage = image;
+        });
+        Navigator.of(context).pop(); // Close the dialog
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: Colors.red,
+          content: Text("Failed to pick image: $e"),
+        ),
+      );
+    }
+  }
+
   void _addToBlogList() async {
     if (_formKey.currentState?.validate() ?? false) {
       try {
@@ -47,6 +97,7 @@ class _AddBlogBottomSheetState extends State<AddBlogBottomSheet> {
           authorName: _authorNameController.text,
           blogContent: _blogContentController.text,
           id: "",
+          imagePath: _selectedImage?.path, // Add image path to your model
         );
 
         await provider.addBlog(newBlog); // Adds to Firestore and notifies
@@ -99,6 +150,36 @@ class _AddBlogBottomSheetState extends State<AddBlogBottomSheet> {
   //   // If validation fails, errors automatically show below each field
   // }
 
+  // Method to show image picker dialog
+  void _showImagePickerDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(
+          'Pick an image',
+          style: TextStyle(color: Color(0xFF606c38)),
+        ),
+        content: Text(
+          'Pick image to show in your blog post.',
+          style: TextStyle(color: Color(0xFF606c38)),
+        ),
+        backgroundColor: Color(0xFFecf39e),
+        actions: [
+          ElevatedButton(
+            onPressed: _pickImageFromCamera,
+            style: ElevatedButton.styleFrom(backgroundColor: Color(0xFF606c38)),
+            child: Text("Camera", style: TextStyle(color: Color(0xFFecf39e))),
+          ),
+          ElevatedButton(
+            onPressed: _pickImageFromGallery,
+            style: ElevatedButton.styleFrom(backgroundColor: Color(0xFF606c38)),
+            child: Text("Gallery", style: TextStyle(color: Color(0xFFecf39e))),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
@@ -107,7 +188,7 @@ class _AddBlogBottomSheetState extends State<AddBlogBottomSheet> {
 
     return Container(
       width: width,
-      height: height * 0.6, // Increased height for error messages
+      height: height * 0.8, // Increased height for error messages
       decoration: BoxDecoration(
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(30),
@@ -172,52 +253,103 @@ class _AddBlogBottomSheetState extends State<AddBlogBottomSheet> {
                   },
                 ),
                 SizedBox(height: height * 0.01),
-                // Elevated button to add an image
-                ElevatedButton(
-                  onPressed: () {},
-                  child: const Text("Add an image"),
-                ),
-                SizedBox(height: height * 0.01),
-                // Text field for blog content
-                TextFieldBottomSheet(
-                  controller: _blogContentController,
-                  hintText: "Blog content",
+
+                // Container to show selected image
+                Container(
+                  width: width * 0.8,
+                  height: height * 0.4,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: _selectedImage != null
+                        ? Colors.transparent
+                        : Colors.blue,
+                    border: _selectedImage != null
+                        ? null
+                        : Border.all(color: Colors.grey),
+                  ),
+                  child: _selectedImage != null
+                      ? ClipRRect(
+                          borderRadius: BorderRadius.circular(10),
+                          child: Image.file(
+                            _selectedImage!,
+                            width: double.infinity,
+                            height: double.infinity,
+                            fit: BoxFit.fill,
+                            errorBuilder: (context, error, stackTrace) {
+                              return Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.error,
+                                    color: Colors.red,
+                                    size: 40,
+                                  ),
+                                  SizedBox(height: 8),
+                                  Text(
+                                    "Failed to load image",
+                                    style: TextStyle(
+                                      color: Colors.red,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                  SizedBox(height: 8),
+                                  TextButton(
+                                    onPressed: _showImagePickerDialog,
+                                    child: Text("Try Again"),
+                                  ),
+                                ],
+                              );
+                            },
+                          ),
+                        )
+                      : Center(
+                          child: TextButton(
+                            onPressed: _showImagePickerDialog,
+                            child: Text(
+                              "Click here to add an image",
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w700,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
                 ),
 
-                // Container(
-                //   height:
-                //       MediaQuery.of(context).size.height - kToolbarHeight * 0.1,
-                //   padding: EdgeInsets.all(16),
-                //   decoration: BoxDecoration(
-                //     color: Color.fromARGB(255, 226, 234, 134),
-                //     borderRadius: BorderRadius.circular(10),
-                //   ),
-                //   child: SingleChildScrollView(
-                //     child: Column(
-                //       children: [
-                //         TextFormField(
-                //           cursorColor: const Color(0xFF90a955),
-                //           controller: _blogContentController,
-                //           decoration: InputDecoration(
-                //             hintText: "Blog content",
-                //             border: InputBorder.none,
-                //             hintStyle: TextStyle(
-                //               color: const Color(0xFF283618),
-                //               fontSize: 18,
-                //             ),
-                //           ),
-                //           maxLines: null,
-                //         ),
-                //       ],
-                //     ),
-                //   ),
+                SizedBox(height: height * 0.003),
+
+                // Remove image button (only show when image is selected)
+                if (_selectedImage != null)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 8.0),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        setState(() {
+                          _selectedImage = null;
+                        });
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red,
+                      ),
+                      child: Text(
+                        "Remove Image",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ),
+
+                // Text field for blog content
+                // TextFieldBottomSheet(
+                //   controller: _blogContentController,
+                //   hintText: "Blog content",
                 // ),
-                SizedBox(height: height * 0.02),
+                SizedBox(height: height * 0.003),
                 GestureDetector(
                   onTap: _addToBlogList, // This will trigger validation
                   child: Container(
                     width: width * 0.4,
-                    height: height * 0.06,
+                    height: height * 0.05,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
                       color: Color(0xFF606c38),
@@ -241,3 +373,57 @@ class _AddBlogBottomSheetState extends State<AddBlogBottomSheet> {
     );
   }
 }
+
+/**
+ * 
+ *     // Elevated button to add an image
+                // ElevatedButton(
+                //   onPressed: () {
+                //     setState(() {
+                //       showDialog(
+                //         context: context,
+                //         builder: (context) => AlertDialog(
+                //           title: Text(
+                //             'Pick an image',
+                //             style: TextStyle(color: Color(0xFF606c38)),
+                //           ),
+                //           content: Text(
+                //             'Pick image to show in your blog post.',
+                //             style: TextStyle(color: Color(0xFF606c38)),
+                //           ),
+                //           backgroundColor: Color(0xFFecf39e),
+                //           actions: [
+                //             ElevatedButton(
+                //               onPressed: () async {
+                //                 File? image =
+                //                     await ImageHelper.pickImageFromCamera();
+                //               },
+                //               child: const Text("Add image from camera"),
+                //             ),
+                //             ElevatedButton(
+                //               onPressed: () async {
+                //                 File? image =
+                //                     await ImageHelper.pickImageFromGallery();
+                //               },
+                //               child: const Text("Add image from gallery"),
+                //             ),
+                //             // TextButton(
+                //             //   onPressed: () => Navigator.of(context).pop(),
+                //             //   child: Text(
+                //             //     'OK',
+                //             //     style: TextStyle(
+                //             //       color: Color.fromARGB(255, 27, 45, 7),
+                //             //     ),
+                //             //   ),
+                //             // ),
+                //           ],
+                //         ),
+                //       );
+                //     });
+                //   },
+                //   child: const Text("Add an image"),
+                // ),
+                
+             
+ * 
+ */

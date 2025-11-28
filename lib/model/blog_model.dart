@@ -1,9 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class BlogModel {
   final String? id;
   final String title;
   final String subtitle;
   final String authorName;
-  // final String image;
+  final String? imagePath;
   final String blogContent;
   int views;
 
@@ -12,10 +14,21 @@ class BlogModel {
     required this.title,
     required this.subtitle,
     required this.authorName,
-    // required this.image,
+    required this.imagePath,
     required this.blogContent,
     this.views = 100,
   });
+
+  Map<String, dynamic> toJson() {
+    return {
+      "title": title,
+      "subtitle": subtitle,
+      "authorName": authorName,
+      "imagePath": imagePath,
+      "blogContent": blogContent,
+      "createdAt": FieldValue.serverTimestamp(),
+    };
+  }
 
   BlogModel copyWith({String? id}) {
     return BlogModel(
@@ -23,7 +36,7 @@ class BlogModel {
       title: title,
       subtitle: subtitle,
       authorName: authorName,
-      // image: image,
+      imagePath: imagePath,
       blogContent: blogContent,
     );
   }
