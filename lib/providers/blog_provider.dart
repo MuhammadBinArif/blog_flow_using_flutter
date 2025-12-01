@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:blog_app_flutter/model/blog_model.dart';
+import 'package:blog_app_flutter/services/cloudinary_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 
@@ -7,6 +10,49 @@ class BlogProvider extends ChangeNotifier {
 
   List<BlogModel> _blogs = [];
   List<BlogModel> get blogs => _blogs;
+
+  // ✅ ADD THIS UPLOAD IMAGE METHOD
+  Future<String> uploadImage(File imageFile) async {
+    try {
+      // Call CloudinaryService to upload the image
+      final imageUrl = await CloudinaryService.uploadImage(imageFile);
+
+      if (imageUrl == null) {
+        throw Exception('Failed to upload image to Cloudinary');
+      }
+
+      return imageUrl; // Returns the Cloudinary URL
+    } catch (e) {
+      print('Error in uploadImage: $e');
+      throw Exception('Image upload failed: $e');
+    }
+  }
+
+  // ✅ UPDATE YOUR EXISTING addBlog METHOD
+  Future<void> addBlog(BlogModel blog) async {
+    try {
+      final docRef = await _firestore.collection("blogs").add({
+        "title": blog.title,
+        "subtitle": blog.subtitle,
+        "authorName": blog.authorName,
+        "blogContent": blog.blogContent, // Add this
+        "imagePath": blog.imagePath, // Add this
+        "createdAt": FieldValue.serverTimestamp(),
+      });
+
+      final newBlog = blog.copyWith(id: docRef.id);
+      _blogs.add(newBlog);
+      notifyListeners();
+    } catch (e) {
+      // Handle FirebaseException specifically
+      if (e is FirebaseException) {
+        print("Firestore error: ${e.code} - ${e.message}");
+      } else {
+        print("Unexpected error: $e");
+      }
+      rethrow; // Important: rethrow to handle in UI
+    }
+  }
 
   // Fetch blogs from firestore
   Future<void> fetchBlogs() async {
@@ -26,29 +72,6 @@ class BlogProvider extends ChangeNotifier {
       notifyListeners();
     } catch (e) {
       if (kDebugMode) print("Error fetching blogs :$e");
-    }
-  }
-
-  // Add a new blog to firestore
-  Future<void> addBlog(BlogModel blog) async {
-    try {
-      final docRef = await _firestore.collection("blogs").add({
-        "title": blog.title,
-        "subtitle": blog.subtitle,
-        "authorName": blog.authorName,
-        "createdAt": FieldValue.serverTimestamp(),
-      });
-
-      final newBlog = blog.copyWith(id: docRef.id);
-      _blogs.add(newBlog);
-      notifyListeners();
-    } catch (e) {
-      // Handle FirebaseException specifically
-      if (e is FirebaseException) {
-        print("Firestore error: ${e.code} - ${e.message}");
-      } else {
-        print("Unexpected error: $e");
-      }
     }
   }
 

@@ -4,14 +4,15 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
 class ImagePickerScreen extends StatefulWidget {
-  const ImagePickerScreen({super.key});
+  final void Function(File?)? onImageSelected;
+  const ImagePickerScreen({super.key, this.onImageSelected});
 
   @override
   _ImagePickerScreenState createState() => _ImagePickerScreenState();
 }
 
 class _ImagePickerScreenState extends State<ImagePickerScreen> {
-  File? _selectedImage;
+  File? selectedImage;
   final ImagePicker _picker = ImagePicker();
 
   // Method to pick image from camera
@@ -20,7 +21,7 @@ class _ImagePickerScreenState extends State<ImagePickerScreen> {
       final image = await ImageHelper.pickImageFromCamera();
       if (image != null) {
         setState(() {
-          _selectedImage = image;
+          selectedImage = image;
         });
         Navigator.of(context).pop(); // Close the dialog
       }
@@ -51,7 +52,7 @@ class _ImagePickerScreenState extends State<ImagePickerScreen> {
       final image = await ImageHelper.pickImageFromGallery();
       if (image != null) {
         setState(() {
-          _selectedImage = image;
+          selectedImage = image;
         });
         Navigator.of(context).pop(); // Close the dialog
       }
@@ -108,50 +109,105 @@ class _ImagePickerScreenState extends State<ImagePickerScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('Image Picker')),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            // Display selected image
-            _selectedImage != null
-                ? Image.file(
-                    _selectedImage!,
-                    height: 300,
-                    width: 300,
-                    fit: BoxFit.cover,
-                  )
-                : Container(
-                    height: 300,
-                    width: 300,
-                    color: Colors.grey[300],
-                    child: Icon(
-                      Icons.image,
-                      size: 100,
-                      color: Colors.grey[600],
-                    ),
-                  ),
-
-            SizedBox(height: 20),
-
-            // Buttons
-            // ElevatedButton.icon(
-            //   onPressed: _pickImageFromGallery,
-            //   icon: Icon(Icons.photo_library),
-            //   label: Text('Pick from Gallery'),
-            // ),
-
-            // SizedBox(height: 10),
-
-            // ElevatedButton.icon(
-            //   onPressed: _pickImageFromCamera,
-            //   icon: Icon(Icons.camera_alt),
-            //   label: Text('Take a Photo'),
-            // ),
-          ],
-        ),
+    var size = MediaQuery.of(context).size;
+    var width = size.width;
+    var height = size.height;
+    return Container(
+      width: width * 0.8,
+      height: height * 0.4,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        color: selectedImage != null ? Colors.transparent : Colors.blue,
+        border: selectedImage != null ? null : Border.all(color: Colors.grey),
       ),
+      child: selectedImage != null
+          ? ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: Image.file(
+                selectedImage!,
+                width: double.infinity,
+                height: double.infinity,
+                fit: BoxFit.fill,
+                errorBuilder: (context, error, stackTrace) {
+                  return Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.error, color: Colors.red, size: 40),
+                      SizedBox(height: 8),
+                      Text(
+                        "Failed to load image",
+                        style: TextStyle(color: Colors.red, fontSize: 16),
+                      ),
+                      SizedBox(height: 8),
+                      TextButton(
+                        onPressed: _showImagePickerDialog,
+                        child: Text("Try Again"),
+                      ),
+                    ],
+                  );
+                },
+              ),
+            )
+          : Center(
+              child: TextButton(
+                onPressed: _showImagePickerDialog,
+                child: Text(
+                  "Click here to add an image",
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
     );
+
+    // Scaffold(
+    //   appBar: AppBar(title: Text('Image Picker')),
+    //   body:
+    //   Center(
+    //     child: Column(
+    //       mainAxisAlignment: MainAxisAlignment.center,
+    //       children: [
+    //         // Display selected image
+    //         _selectedImage != null
+    //             ? Image.file(
+    //                 _selectedImage!,
+    //                 height: 300,
+    //                 width: 300,
+    //                 fit: BoxFit.cover,
+    //               )
+    //             : Container(
+    //                 height: 300,
+    //                 width: 300,
+    //                 color: Colors.grey[300],
+    //                 child: Icon(
+    //                   Icons.image,
+    //                   size: 100,
+    //                   color: Colors.grey[600],
+    //                 ),
+    //               ),
+
+    //         SizedBox(height: 20),
+
+    //         // Buttons
+    //         // ElevatedButton.icon(
+    //         //   onPressed: _pickImageFromGallery,
+    //         //   icon: Icon(Icons.photo_library),
+    //         //   label: Text('Pick from Gallery'),
+    //         // ),
+
+    //         // SizedBox(height: 10),
+
+    //         // ElevatedButton.icon(
+    //         //   onPressed: _pickImageFromCamera,
+    //         //   icon: Icon(Icons.camera_alt),
+    //         //   label: Text('Take a Photo'),
+    //         // ),
+    //       ],
+    //     ),
+    //   ),
+    // );
   }
 }
