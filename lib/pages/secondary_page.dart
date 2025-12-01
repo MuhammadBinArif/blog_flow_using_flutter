@@ -73,10 +73,29 @@ class _SecondaryPageState extends State<SecondaryPage> {
               ),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(10),
-                child: Image(
-                  image: AssetImage("assets/images/time.jpg"),
-                  fit: BoxFit.cover,
-                ),
+                child: blog.imagePath.isNotEmpty
+                    ? Image.network(
+                        blog.imagePath, // Use blog image URL
+                        fit: BoxFit.cover,
+                        loadingBuilder: (context, child, loadingProgress) {
+                          if (loadingProgress == null) return child;
+                          return Center(child: CircularProgressIndicator());
+                        },
+                        errorBuilder: (context, error, stackTrace) {
+                          return Image.asset(
+                            "assets/images/time.jpg", // Fal back image
+                            fit: BoxFit.cover,
+                          );
+                        },
+                      )
+                    : Image.asset(
+                        "assets/images/time.jpg", // Default if no image
+                        fit: BoxFit.cover,
+                      ),
+                //  Image(
+                //   image: AssetImage("assets/images/time.jpg"),
+                //   fit: BoxFit.cover,
+                // ),
               ),
               //  Image.asset("assets/images/time.jpg", fit: BoxFit.fill),
             ),
@@ -84,7 +103,7 @@ class _SecondaryPageState extends State<SecondaryPage> {
             Padding(
               padding: EdgeInsets.only(left: width * 0.1),
               child: Text(
-                blog.title,
+                "Title: ${blog.title}",
                 style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
               ),
             ),
@@ -121,7 +140,7 @@ class _SecondaryPageState extends State<SecondaryPage> {
             Padding(
               padding: EdgeInsets.only(left: width * 0.1),
               child: Text(
-                blog.subtitle,
+                "Author: ${blog.authorName}",
                 style: TextStyle(fontSize: 23, fontWeight: FontWeight.bold),
               ),
             ),

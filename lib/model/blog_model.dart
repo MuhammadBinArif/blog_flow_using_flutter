@@ -5,12 +5,12 @@ class BlogModel {
   final String title;
   final String subtitle;
   final String authorName;
-  final String? imagePath;
+  final String imagePath;
   final String blogContent;
   int views;
 
   BlogModel({
-    this.id,
+    required this.id,
     required this.title,
     required this.subtitle,
     required this.authorName,
