@@ -10,6 +10,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:uuid/uuid.dart';
 
 class AddBlogBottomSheet extends StatefulWidget {
   const AddBlogBottomSheet({super.key});
@@ -94,12 +95,15 @@ class _AddBlogBottomSheetState extends State<AddBlogBottomSheet> {
         // ✅ Now this will work because uploadImage method exists
         String imageUrl = await provider.uploadImage(_selectedImage!);
 
+        //Make unique blog id
+        final uuid = Uuid();
         BlogModel newBlog = BlogModel(
+          id: uuid.v4(),
           title: _titleController.text,
           subtitle: _subtitleController.text,
           authorName: _authorNameController.text,
           blogContent: _blogContentController.text,
-          id: "",
+
           imagePath: imageUrl, // Add image path to your model
         );
 
@@ -213,169 +217,172 @@ class _AddBlogBottomSheetState extends State<AddBlogBottomSheet> {
           child: Form(
             // Wrap with Form widget
             key: _formKey, // Attach the form key
-            child: Column(
-              children: [
-                // Title field with validation
-                FormFieldBottomSheet(
-                  controller: _titleController,
-                  hintText: "Title",
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                  validator: (value) =>
-                      _validateField(value, 'title'), // Add validator
-                  onFieldSubmitted: (value) {
-                    _formKey.currentState?.validate();
-                  },
-                ),
-                SizedBox(height: height * 0.02),
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  // Title field with validation
+                  FormFieldBottomSheet(
+                    controller: _titleController,
+                    hintText: "Title",
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    validator: (value) =>
+                        _validateField(value, 'title'), // Add validator
+                    onFieldSubmitted: (value) {
+                      _formKey.currentState?.validate();
+                    },
+                  ),
+                  SizedBox(height: height * 0.02),
 
-                // Subtitle field with validation
-                FormFieldBottomSheet(
-                  controller: _subtitleController,
-                  hintText: "Subtitle",
-                  fontSize: 18,
-                  fontWeight: FontWeight.w700,
-                  validator: (value) =>
-                      _validateField(value, 'subtitle'), // Add validator
-                  onFieldSubmitted: (value) {
-                    _formKey.currentState?.validate();
-                  },
-                ),
-                SizedBox(height: height * 0.02),
+                  // Subtitle field with validation
+                  FormFieldBottomSheet(
+                    controller: _subtitleController,
+                    hintText: "Subtitle",
+                    fontSize: 18,
+                    fontWeight: FontWeight.w700,
+                    validator: (value) =>
+                        _validateField(value, 'subtitle'), // Add validator
+                    onFieldSubmitted: (value) {
+                      _formKey.currentState?.validate();
+                    },
+                  ),
+                  SizedBox(height: height * 0.02),
 
-                // Author field with validation
-                FormFieldBottomSheet(
-                  controller: _authorNameController,
-                  hintText: "Author name",
-                  fontSize: 22,
-                  fontWeight: FontWeight.w800,
-                  validator: (value) =>
-                      _validateField(value, 'author name'), // Add validator
-                  onFieldSubmitted: (value) {
-                    _formKey.currentState?.validate();
-                  },
-                ),
-                SizedBox(height: height * 0.01),
+                  // Author field with validation
+                  FormFieldBottomSheet(
+                    controller: _authorNameController,
+                    hintText: "Author name",
+                    fontSize: 22,
+                    fontWeight: FontWeight.w800,
+                    validator: (value) =>
+                        _validateField(value, 'author name'), // Add validator
+                    onFieldSubmitted: (value) {
+                      _formKey.currentState?.validate();
+                    },
+                  ),
+                  SizedBox(height: height * 0.02),
 
-                // Container to show selected image
-                ImagePickerScreen(
-                  onImageSelected: (File? image) {
-                    setState(() {
-                      _selectedImage = image;
-                    });
-                  },
-                ),
-
-                // Container(
-                //   width: width * 0.8,
-                //   height: height * 0.4,
-                //   decoration: BoxDecoration(
-                //     borderRadius: BorderRadius.circular(10),
-                //     color: _selectedImage != null
-                //         ? Colors.transparent
-                //         : Colors.blue,
-                //     border: _selectedImage != null
-                //         ? null
-                //         : Border.all(color: Colors.grey),
-                //   ),
-                //   child: _selectedImage != null
-                //       ? ClipRRect(
-                //           borderRadius: BorderRadius.circular(10),
-                //           child: Image.file(
-                //             _selectedImage!,
-                //             width: double.infinity,
-                //             height: double.infinity,
-                //             fit: BoxFit.fill,
-                //             errorBuilder: (context, error, stackTrace) {
-                //               return Column(
-                //                 mainAxisAlignment: MainAxisAlignment.center,
-                //                 children: [
-                //                   Icon(
-                //                     Icons.error,
-                //                     color: Colors.red,
-                //                     size: 40,
-                //                   ),
-                //                   SizedBox(height: 8),
-                //                   Text(
-                //                     "Failed to load image",
-                //                     style: TextStyle(
-                //                       color: Colors.red,
-                //                       fontSize: 16,
-                //                     ),
-                //                   ),
-                //                   SizedBox(height: 8),
-                //                   TextButton(
-                //                     onPressed: _showImagePickerDialog,
-                //                     child: Text("Try Again"),
-                //                   ),
-                //                 ],
-                //               );
-                //             },
-                //           ),
-                //         )
-                //       : Center(
-                //           child: TextButton(
-                //             onPressed: _showImagePickerDialog,
-                //             child: Text(
-                //               "Click here to add an image",
-                //               style: TextStyle(
-                //                 fontSize: 20,
-                //                 fontWeight: FontWeight.w700,
-                //                 color: Colors.white,
-                //               ),
-                //             ),
-                //           ),
-                //         ),
-                // ),
-                SizedBox(height: height * 0.003),
-
-                // Remove image button (only show when image is selected)
-                if (_selectedImage != null)
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 8.0),
-                    child: ElevatedButton(
-                      onPressed: () {
-                        setState(() {
-                          _selectedImage = null;
-                        });
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.red,
-                      ),
-                      child: Text(
-                        "Remove Image",
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ),
+                  // Container to show selected image
+                  ImagePickerScreen(
+                    onImageSelected: (File? image) {
+                      setState(() {
+                        _selectedImage = image;
+                      });
+                    },
                   ),
 
-                // Text field for blog content
-                // TextFieldBottomSheet(
-                //   controller: _blogContentController,
-                //   hintText: "Blog content",
-                // ),
-                SizedBox(height: height * 0.003),
-                GestureDetector(
-                  onTap: _addToBlogList, // This will trigger validation
-                  child: Container(
-                    width: width * 0.4,
-                    height: height * 0.05,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: Color(0xFF606c38),
+                  // Container(
+                  //   width: width * 0.8,
+                  //   height: height * 0.4,
+                  //   decoration: BoxDecoration(
+                  //     borderRadius: BorderRadius.circular(10),
+                  //     color: _selectedImage != null
+                  //         ? Colors.transparent
+                  //         : Colors.blue,
+                  //     border: _selectedImage != null
+                  //         ? null
+                  //         : Border.all(color: Colors.grey),
+                  //   ),
+                  //   child: _selectedImage != null
+                  //       ? ClipRRect(
+                  //           borderRadius: BorderRadius.circular(10),
+                  //           child: Image.file(
+                  //             _selectedImage!,
+                  //             width: double.infinity,
+                  //             height: double.infinity,
+                  //             fit: BoxFit.fill,
+                  //             errorBuilder: (context, error, stackTrace) {
+                  //               return Column(
+                  //                 mainAxisAlignment: MainAxisAlignment.center,
+                  //                 children: [
+                  //                   Icon(
+                  //                     Icons.error,
+                  //                     color: Colors.red,
+                  //                     size: 40,
+                  //                   ),
+                  //                   SizedBox(height: 8),
+                  //                   Text(
+                  //                     "Failed to load image",
+                  //                     style: TextStyle(
+                  //                       color: Colors.red,
+                  //                       fontSize: 16,
+                  //                     ),
+                  //                   ),
+                  //                   SizedBox(height: 8),
+                  //                   TextButton(
+                  //                     onPressed: _showImagePickerDialog,
+                  //                     child: Text("Try Again"),
+                  //                   ),
+                  //                 ],
+                  //               );
+                  //             },
+                  //           ),
+                  //         )
+                  //       : Center(
+                  //           child: TextButton(
+                  //             onPressed: _showImagePickerDialog,
+                  //             child: Text(
+                  //               "Click here to add an image",
+                  //               style: TextStyle(
+                  //                 fontSize: 20,
+                  //                 fontWeight: FontWeight.w700,
+                  //                 color: Colors.white,
+                  //               ),
+                  //             ),
+                  //           ),
+                  //         ),
+                  // ),
+                  SizedBox(height: height * 0.02),
+
+                  // Remove image button (only show when image is selected)
+                  if (_selectedImage != null)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 8.0),
+                      child: ElevatedButton(
+                        onPressed: () {
+                          setState(() {
+                            _selectedImage = null;
+                          });
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.red,
+                        ),
+                        child: Text(
+                          "Remove Image",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
                     ),
-                    child: Center(
-                      child: Text(
-                        "Done",
-                        style: TextStyle(
-                          color: Color(0xFFecf39e),
-                          fontSize: 22,
+
+                  // Text field for blog content
+                  TextFieldBottomSheet(
+                    controller: _blogContentController,
+                    hintText: "Blog content",
+                  ),
+                  SizedBox(height: height * 0.02),
+                  GestureDetector(
+                    onTap: _addToBlogList, // This will trigger validation
+                    child: Container(
+                      width: width * 0.6,
+                      height: height * 0.06,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: Color(0xFF606c38),
+                      ),
+                      child: Center(
+                        child: Text(
+                          "Done",
+                          style: TextStyle(
+                            color: Color(0xFFecf39e),
+                            fontSize: 22,
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-              ],
+                  SizedBox(height: height * 0.02),
+                ],
+              ),
             ),
           ),
         ),

@@ -29,28 +29,31 @@ class BlogProvider extends ChangeNotifier {
   }
 
   // ✅ UPDATE YOUR EXISTING addBlog METHOD
-  Future<void> addBlog(BlogModel blog) async {
+  Future<String> addBlog(BlogModel blog) async {
     try {
-      final docRef = await _firestore.collection("blogs").add({
-        "title": blog.title,
-        "subtitle": blog.subtitle,
-        "authorName": blog.authorName,
-        "blogContent": blog.blogContent, // Add this
-        "imagePath": blog.imagePath, // Add this
+      // Create document reference first
+      final docRef = _firestore.collection("blogs").doc();
+
+      // Use the Auto-generated Id from firestore
+      final blogWithId = blog.copyWith(id: docRef.id);
+
+      // Add to firestore with the Id
+      await docRef.set({
+        "id": docRef.id, // Store Id in document
+        "title": blogWithId.title,
+        "subtitle": blogWithId.subtitle,
+        "authorName": blogWithId.authorName,
+        "blogContent": blogWithId.blogContent,
+        "imagePath": blogWithId.imagePath,
         "createdAt": FieldValue.serverTimestamp(),
       });
 
-      final newBlog = blog.copyWith(id: docRef.id);
-      _blogs.add(newBlog);
+      _blogs.add(blogWithId);
       notifyListeners();
+
+      return docRef.id; // Return the generated Id
     } catch (e) {
-      // Handle FirebaseException specifically
-      if (e is FirebaseException) {
-        print("Firestore error: ${e.code} - ${e.message}");
-      } else {
-        print("Unexpected error: $e");
-      }
-      rethrow; // Important: rethrow to handle in UI
+      throw Exception("Error adding blog : $e");
     }
   }
 
@@ -103,3 +106,28 @@ class BlogProvider extends ChangeNotifier {
   //   // use firebase firestore to upload the data
   // }
 }
+
+
+/**
+ *  // .add({
+      //   "title": blog.title,
+      //   "subtitle": blog.subtitle,
+      //   "authorName": blog.authorName,
+      //   "blogContent": blog.blogContent, // Add this
+      //   "imagePath": blog.imagePath, // Add this
+      //   "createdAt": FieldValue.serverTimestamp(),
+      // });
+ * 
+ *  //   final newBlog = blog.copyWith(id: docRef.id);
+    //   _blogs.add(newBlog);
+    //   notifyListeners();
+    // } catch (e) {
+    //   // Handle FirebaseException specifically
+    //   if (e is FirebaseException) {
+    //     print("Firestore error: ${e.code} - ${e.message}");
+    //   } else {
+    //     print("Unexpected error: $e");
+    //   }
+    //   rethrow; // Important: rethrow to handle in UI
+    // }
+ */

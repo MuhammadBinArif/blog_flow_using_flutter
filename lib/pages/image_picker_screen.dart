@@ -117,8 +117,12 @@ class _ImagePickerScreenState extends State<ImagePickerScreen> {
       height: height * 0.4,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
-        color: selectedImage != null ? Colors.transparent : Colors.blue,
-        border: selectedImage != null ? null : Border.all(color: Colors.grey),
+        color: selectedImage != null
+            ? Colors.transparent
+            : Color.fromARGB(255, 226, 234, 134),
+        border: selectedImage != null
+            ? null
+            : Border.all(color: Color(0xFF606c38)),
       ),
       child: selectedImage != null
           ? ClipRRect(
@@ -156,7 +160,7 @@ class _ImagePickerScreenState extends State<ImagePickerScreen> {
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.w700,
-                    color: Colors.white,
+                    color: const Color(0xFF283618),
                   ),
                 ),
               ),
