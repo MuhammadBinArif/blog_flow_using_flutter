@@ -165,9 +165,16 @@ class _ImagePickerScreenState extends State<ImagePickerScreen> {
                 ),
               ),
             ),
-    );
 
-    // Scaffold(
+      // // When image is picked, call
+      // onImageSelectected?.call(selectedImage),
+    );
+  }
+}
+
+/***
+ * 
+ *     // Scaffold(
     //   appBar: AppBar(title: Text('Image Picker')),
     //   body:
     //   Center(
@@ -213,5 +220,6 @@ class _ImagePickerScreenState extends State<ImagePickerScreen> {
     //     ),
     //   ),
     // );
-  }
-}
+ * 
+ * 
+ */

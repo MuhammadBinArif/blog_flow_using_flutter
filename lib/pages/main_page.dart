@@ -93,9 +93,10 @@ class _MainPageState extends State<MainPage> {
               itemBuilder: (context, index) {
                 final blog = blogProvider.blogs[index];
                 return MyBlogCard(
-                  title: blog.title,
-                  subtitle: blog.subtitle,
-                  authorName: blog.authorName,
+                  blog: blog,
+                  // title: blog.title,
+                  // subtitle: blog.subtitle,
+                  // authorName: blog.authorName,
                 );
               },
             ),

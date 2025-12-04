@@ -1,16 +1,19 @@
+import 'package:blog_app_flutter/model/blog_model.dart';
 import 'package:blog_app_flutter/pages/secondary_page.dart';
 import 'package:flutter/material.dart';
 
 class MyBlogCard extends StatelessWidget {
-  final String title;
-  final String subtitle;
-  final String authorName;
+  // final String title;
+  // final String subtitle;
+  // final String authorName;
+  final BlogModel blog;
 
   const MyBlogCard({
     super.key,
-    required this.title,
-    required this.subtitle,
-    required this.authorName,
+    // required this.title,
+    // required this.subtitle,
+    // required this.authorName,
+    required this.blog,
   });
 
   @override
@@ -34,21 +37,21 @@ class MyBlogCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                title,
+                blog.title,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(),
               ),
               SizedBox(height: height * 0.022),
               Text(
-                subtitle,
+                blog.subtitle,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(),
               ),
               SizedBox(height: height * 0.022),
               Text(
-                authorName,
+                "By: ${blog.authorName}",
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(),
@@ -56,8 +59,12 @@ class MyBlogCard extends StatelessWidget {
               SizedBox(height: height * 0.04),
               InkWell(
                 onTap: () {
+                  // print('Opening blog with ID: ${blog.id}');
+                  // print('Blog title: ${blog.title}');
                   Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => SecondaryPage()),
+                    MaterialPageRoute(
+                      builder: (context) => SecondaryPage(blog: blog),
+                    ),
                   );
                 },
                 child: Container(

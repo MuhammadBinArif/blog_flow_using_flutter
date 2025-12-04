@@ -29,31 +29,27 @@ class BlogProvider extends ChangeNotifier {
   }
 
   // ✅ UPDATE YOUR EXISTING addBlog METHOD
-  Future<String> addBlog(BlogModel blog) async {
+  Future<void> addBlog(BlogModel blog) async {
     try {
-      // Create document reference first
-      final docRef = _firestore.collection("blogs").doc();
-
-      // Use the Auto-generated Id from firestore
-      final blogWithId = blog.copyWith(id: docRef.id);
-
-      // Add to firestore with the Id
-      await docRef.set({
-        "id": docRef.id, // Store Id in document
-        "title": blogWithId.title,
-        "subtitle": blogWithId.subtitle,
-        "authorName": blogWithId.authorName,
-        "blogContent": blogWithId.blogContent,
-        "imagePath": blogWithId.imagePath,
+      final docRef = await _firestore.collection("blogs").doc(blog.id).set({
+        "id": blog.id,
+        "title": blog.title,
+        "subtitle": blog.subtitle,
+        "authorName": blog.authorName,
+        "blogContent": blog.blogContent, // ✅ ADD THIS
+        "imagePath": blog.imagePath, // ✅ ADD THIS
         "createdAt": FieldValue.serverTimestamp(),
       });
 
-      _blogs.add(blogWithId);
+      _blogs.add(blog);
       notifyListeners();
-
-      return docRef.id; // Return the generated Id
     } catch (e) {
-      throw Exception("Error adding blog : $e");
+      if (e is FirebaseException) {
+        print("Firestore error: ${e.code} - ${e.message}");
+      } else {
+        print("Unexpected error: $e");
+      }
+      rethrow; // Important for error handling in UI
     }
   }
 

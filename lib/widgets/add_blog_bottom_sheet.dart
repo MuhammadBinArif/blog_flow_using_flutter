@@ -29,6 +29,7 @@ class _AddBlogBottomSheetState extends State<AddBlogBottomSheet> {
 
   // Add this variable to store the selected image
   File? _selectedImage;
+  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -47,55 +48,49 @@ class _AddBlogBottomSheetState extends State<AddBlogBottomSheet> {
     return null; // Return null if valid
   }
 
-  // // Method to pick image from camera
-  // Future<void> _pickImageFromCamera() async {
-  //   try {
-  //     final image = await ImageHelper.pickImageFromCamera();
-  //     if (image != null) {
-  //       setState(() {
-  //         _selectedImage = image;
-  //       });
-  //       Navigator.of(context).pop(); // Close the dialog
-  //     }
-  //   } catch (e) {
-  //     ScaffoldMessenger.of(context).showSnackBar(
-  //       SnackBar(
-  //         backgroundColor: Colors.red,
-  //         content: Text("Failed to capture image: $e"),
-  //       ),
-  //     );
-  //   }
-  // }
-
-  // // Method to pick image from gallery
-  // Future<void> _pickImageFromGallery() async {
-  //   try {
-  //     final image = await ImageHelper.pickImageFromGallery();
-  //     if (image != null) {
-  //       setState(() {
-  //         _selectedImage = image;
-  //       });
-  //       Navigator.of(context).pop(); // Close the dialog
-  //     }
-  //   } catch (e) {
-  //     ScaffoldMessenger.of(context).showSnackBar(
-  //       SnackBar(
-  //         backgroundColor: Colors.red,
-  //         content: Text("Failed to pick image: $e"),
-  //       ),
-  //     );
-  //   }
-  // }
-
   void _addToBlogList() async {
+    // Prevent double tap
+    if (_isLoading) return;
+
+    // Validate form
     if (_formKey.currentState?.validate() ?? false) {
+      // Set loading state
+      setState(() {
+        _isLoading = true;
+      });
+
+      // Show loading dialog
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) =>
+            Center(child: CircularProgressIndicator(color: Color(0xFF606c38))),
+      );
+
       try {
+        // ✅ CHECK FOR IMAGE
+        if (_selectedImage == null) {
+          Navigator.of(context).pop(); // Remove loading dialog
+          setState(() {
+            _isLoading = false;
+          });
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              backgroundColor: Colors.red,
+              content: Text("Please select an image"),
+            ),
+          );
+          return;
+        }
+
         final provider = Provider.of<BlogProvider>(context, listen: false);
 
-        // ✅ Now this will work because uploadImage method exists
+        // ✅ UPLOAD IMAGE TO CLOUDINARY
+        print("Uploading image to Cloudinary...");
         String imageUrl = await provider.uploadImage(_selectedImage!);
+        print("Image uploaded. URL: $imageUrl");
 
-        //Make unique blog id
+        // ✅ CREATE BLOG MODEL
         final uuid = Uuid();
         BlogModel newBlog = BlogModel(
           id: uuid.v4(),
@@ -103,13 +98,19 @@ class _AddBlogBottomSheetState extends State<AddBlogBottomSheet> {
           subtitle: _subtitleController.text,
           authorName: _authorNameController.text,
           blogContent: _blogContentController.text,
-
-          imagePath: imageUrl, // Add image path to your model
+          imagePath: imageUrl,
         );
 
-        await provider.addBlog(newBlog); // Adds to Firestore and notifies
+        print("Creating blog: ${newBlog.title}");
 
+        // ✅ SAVE TO FIRESTORE
+        await provider.addBlog(newBlog);
+        print("Blog saved to Firestore");
+
+        // ✅ SUCCESS - CLEAN UP
+        Navigator.of(context).pop(); // Remove loading dialog
         Navigator.of(context).pop(); // Close bottom sheet
+
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             backgroundColor: Color(0xFF606c38),
@@ -119,73 +120,44 @@ class _AddBlogBottomSheetState extends State<AddBlogBottomSheet> {
             ),
           ),
         );
+
+        // ✅ CLEAR FORM
+        _clearForm();
       } catch (e) {
+        // ✅ ERROR HANDLING
+        print("Error in _addToBlogList: $e");
+
+        Navigator.of(context).pop(); // Remove loading dialog
+
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             backgroundColor: Colors.red,
-            content: Text("Failed to add blog: $e"),
+            content: Text("Error: ${e.toString()}"),
+            duration: Duration(seconds: 3),
           ),
         );
+      } finally {
+        // ✅ ALWAYS RESET LOADING STATE
+        setState(() {
+          _isLoading = false;
+        });
       }
+    } else {
+      // Form validation failed
+      print("Form validation failed");
     }
   }
 
-  // void _addToBlogList() {
-  //   // This will automatically validate all fields and show errors
-  //   if (_formKey.currentState!.validate()) {
-  //     // Only executed if ALL fields are valid
-  //     BlogModel newBlog = BlogModel(
-  //       title: _titleController.text,
-  //       subtitle: _subtitleController.text,
-  //       authorName: _authorNameController.text,
-  //       id: '',
-  //     );
-
-  //     blog.add(newBlog);
-
-  //     Navigator.of(context).pop();
-  //     ScaffoldMessenger.of(context).showSnackBar(
-  //       SnackBar(
-  //         backgroundColor: Color(0xFF606c38),
-  //         content: Text(
-  //           "Blog added successfully!",
-  //           style: TextStyle(color: Color(0xFFecf39e)),
-  //         ),
-  //       ),
-  //     );
-  //   }
-  //   // If validation fails, errors automatically show below each field
-  // }
-
-  // // Method to show image picker dialog
-  // void _showImagePickerDialog() {
-  //   showDialog(
-  //     context: context,
-  //     builder: (context) => AlertDialog(
-  //       title: Text(
-  //         'Pick an image',
-  //         style: TextStyle(color: Color(0xFF606c38)),
-  //       ),
-  //       content: Text(
-  //         'Pick image to show in your blog post.',
-  //         style: TextStyle(color: Color(0xFF606c38)),
-  //       ),
-  //       backgroundColor: Color(0xFFecf39e),
-  //       actions: [
-  //         ElevatedButton(
-  //           onPressed: _pickImageFromCamera,
-  //           style: ElevatedButton.styleFrom(backgroundColor: Color(0xFF606c38)),
-  //           child: Text("Camera", style: TextStyle(color: Color(0xFFecf39e))),
-  //         ),
-  //         ElevatedButton(
-  //           onPressed: _pickImageFromGallery,
-  //           style: ElevatedButton.styleFrom(backgroundColor: Color(0xFF606c38)),
-  //           child: Text("Gallery", style: TextStyle(color: Color(0xFFecf39e))),
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
+  // ✅ ADD CLEAR FORM METHOD
+  void _clearForm() {
+    _titleController.clear();
+    _subtitleController.clear();
+    _authorNameController.clear();
+    _blogContentController.clear();
+    setState(() {
+      _selectedImage = null;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -271,67 +243,6 @@ class _AddBlogBottomSheetState extends State<AddBlogBottomSheet> {
                     },
                   ),
 
-                  // Container(
-                  //   width: width * 0.8,
-                  //   height: height * 0.4,
-                  //   decoration: BoxDecoration(
-                  //     borderRadius: BorderRadius.circular(10),
-                  //     color: _selectedImage != null
-                  //         ? Colors.transparent
-                  //         : Colors.blue,
-                  //     border: _selectedImage != null
-                  //         ? null
-                  //         : Border.all(color: Colors.grey),
-                  //   ),
-                  //   child: _selectedImage != null
-                  //       ? ClipRRect(
-                  //           borderRadius: BorderRadius.circular(10),
-                  //           child: Image.file(
-                  //             _selectedImage!,
-                  //             width: double.infinity,
-                  //             height: double.infinity,
-                  //             fit: BoxFit.fill,
-                  //             errorBuilder: (context, error, stackTrace) {
-                  //               return Column(
-                  //                 mainAxisAlignment: MainAxisAlignment.center,
-                  //                 children: [
-                  //                   Icon(
-                  //                     Icons.error,
-                  //                     color: Colors.red,
-                  //                     size: 40,
-                  //                   ),
-                  //                   SizedBox(height: 8),
-                  //                   Text(
-                  //                     "Failed to load image",
-                  //                     style: TextStyle(
-                  //                       color: Colors.red,
-                  //                       fontSize: 16,
-                  //                     ),
-                  //                   ),
-                  //                   SizedBox(height: 8),
-                  //                   TextButton(
-                  //                     onPressed: _showImagePickerDialog,
-                  //                     child: Text("Try Again"),
-                  //                   ),
-                  //                 ],
-                  //               );
-                  //             },
-                  //           ),
-                  //         )
-                  //       : Center(
-                  //           child: TextButton(
-                  //             onPressed: _showImagePickerDialog,
-                  //             child: Text(
-                  //               "Click here to add an image",
-                  //               style: TextStyle(
-                  //                 fontSize: 20,
-                  //                 fontWeight: FontWeight.w700,
-                  //                 color: Colors.white,
-                  //               ),
-                  //             ),
-                  //           ),
-                  //         ),
-                  // ),
                   SizedBox(height: height * 0.02),
 
                   // Remove image button (only show when image is selected)
@@ -361,22 +272,35 @@ class _AddBlogBottomSheetState extends State<AddBlogBottomSheet> {
                   ),
                   SizedBox(height: height * 0.02),
                   GestureDetector(
-                    onTap: _addToBlogList, // This will trigger validation
+                    onTap: _isLoading
+                        ? null
+                        : _addToBlogList, // Disable when loading
                     child: Container(
                       width: width * 0.6,
                       height: height * 0.06,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
-                        color: Color(0xFF606c38),
+                        color: _isLoading
+                            ? Colors.grey
+                            : Color(0xFF606c38), // Grey when loading
                       ),
                       child: Center(
-                        child: Text(
-                          "Done",
-                          style: TextStyle(
-                            color: Color(0xFFecf39e),
-                            fontSize: 22,
-                          ),
-                        ),
+                        child: _isLoading
+                            ? SizedBox(
+                                width: 20,
+                                height: 20,
+                                child: CircularProgressIndicator(
+                                  color: Color(0xFFecf39e),
+                                  strokeWidth: 2,
+                                ),
+                              )
+                            : Text(
+                                "Done",
+                                style: TextStyle(
+                                  color: Color(0xFFecf39e),
+                                  fontSize: 22,
+                                ),
+                              ),
                       ),
                     ),
                   ),
