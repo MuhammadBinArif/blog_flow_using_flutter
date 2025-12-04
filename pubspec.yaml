@@ -42,6 +42,7 @@ dependencies:
   cloudinary_flutter: ^1.3.0
   http: ^1.6.0
   uuid: ^4.5.2
+  flutter_launcher_icons: ^0.14.4
 
 dev_dependencies:
   flutter_test:
@@ -56,6 +57,12 @@ dev_dependencies:
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
+
+# To add assets to your application, add an assets section,
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/icon/blog_flow_icon.png"
 
 # The following section is specific to Flutter packages.
 flutter:

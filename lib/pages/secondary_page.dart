@@ -103,7 +103,8 @@ class _SecondaryPageState extends State<SecondaryPage> {
             Padding(
               padding: EdgeInsets.only(left: width * 0.1),
               child: Text(
-                "Title: ${blog.title}",
+                blog.title,
+                // "Title: ${blog.title}",
                 style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
               ),
             ),
