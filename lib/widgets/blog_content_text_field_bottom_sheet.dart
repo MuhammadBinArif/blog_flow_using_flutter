@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 
-class TextFieldBottomSheet extends StatelessWidget {
+class BlogContentTextFieldBottomSheet extends StatelessWidget {
   final TextEditingController controller;
   final String hintText;
-  const TextFieldBottomSheet({
+  final String? Function(String?)? validator;
+  const BlogContentTextFieldBottomSheet({
     super.key,
     required this.controller,
     required this.hintText,
+    required this.validator,
+    required Null Function(dynamic value) onFieldSubmitted,
   });
 
   @override
@@ -23,7 +26,8 @@ class TextFieldBottomSheet extends StatelessWidget {
       child: SingleChildScrollView(
         child: Column(
           children: [
-            TextField(
+            TextFormField(
+              validator: validator,
               cursorColor: const Color(0xFF90a955),
               controller: controller,
               decoration: InputDecoration(

@@ -23,6 +23,7 @@ class _ImagePickerScreenState extends State<ImagePickerScreen> {
         setState(() {
           selectedImage = image;
         });
+        widget.onImageSelected?.call(selectedImage); // Call the callback
         Navigator.of(context).pop(); // Close the dialog
       }
     } catch (e) {
@@ -35,17 +36,6 @@ class _ImagePickerScreenState extends State<ImagePickerScreen> {
     }
   }
 
-  // Pick image from gallery
-  // Future<void> pickImageFromGallery() async {
-  //   final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
-
-  //   if (image != null) {
-  //     setState(() {
-  //       _selectedImage = File(image.path);
-  //     });
-  //   }
-  // }
-
   // Method to pick image from gallery
   Future<void> _pickImageFromGallery() async {
     try {
@@ -54,6 +44,7 @@ class _ImagePickerScreenState extends State<ImagePickerScreen> {
         setState(() {
           selectedImage = image;
         });
+        widget.onImageSelected?.call(selectedImage); // Call the callback
         Navigator.of(context).pop(); // Close the dialog
       }
     } catch (e) {
@@ -65,17 +56,6 @@ class _ImagePickerScreenState extends State<ImagePickerScreen> {
       );
     }
   }
-
-  //  // Pick image from camera
-  // Future<void> pickImageFromCamera() async {
-  //   final XFile? image = await _picker.pickImage(source: ImageSource.camera);
-
-  //   if (image != null) {
-  //     setState(() {
-  //       _selectedImage = File(image.path);
-  //     });
-  //   }
-  // }
 
   // Method to show image picker dialog
   void _showImagePickerDialog() {
@@ -165,9 +145,6 @@ class _ImagePickerScreenState extends State<ImagePickerScreen> {
                 ),
               ),
             ),
-
-      // // When image is picked, call
-      // onImageSelectected?.call(selectedImage),
     );
   }
 }

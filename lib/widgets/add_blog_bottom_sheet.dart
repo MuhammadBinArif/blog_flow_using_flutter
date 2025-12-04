@@ -5,7 +5,7 @@ import 'package:blog_app_flutter/pages/image_helper.dart';
 import 'package:blog_app_flutter/pages/image_picker_screen.dart';
 import 'package:blog_app_flutter/providers/blog_provider.dart';
 import 'package:blog_app_flutter/widgets/form_field_bottom_sheet.dart';
-import 'package:blog_app_flutter/widgets/text_field_bottom_sheet.dart';
+import 'package:blog_app_flutter/widgets/blog_content_text_field_bottom_sheet.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -49,17 +49,23 @@ class _AddBlogBottomSheetState extends State<AddBlogBottomSheet> {
   }
 
   void _addToBlogList() async {
-    // Prevent double tap
-    if (_isLoading) return;
+    print("🔥 BUTTON WAS TAPPED! _isLoading = $_isLoading");
+    if (_isLoading) {
+      print("🔥 Button is disabled because _isLoading is true.");
+      return;
+    }
 
-    // Validate form
-    if (_formKey.currentState?.validate() ?? false) {
-      // Set loading state
+    print("🔥 About to call validate()");
+    bool isValid = _formKey.currentState?.validate() ?? false;
+    print("🔥 validate() returned: $isValid");
+
+    if (isValid) {
+      print("🔥 Form validation passed.");
       setState(() {
         _isLoading = true;
       });
 
-      // Show loading dialog
+      print("🔥 Showing loading dialog");
       showDialog(
         context: context,
         barrierDismissible: false,
@@ -68,9 +74,10 @@ class _AddBlogBottomSheetState extends State<AddBlogBottomSheet> {
       );
 
       try {
-        // ✅ CHECK FOR IMAGE
+        print("🔥 Checking for selected image");
         if (_selectedImage == null) {
-          Navigator.of(context).pop(); // Remove loading dialog
+          print("🔥 No image selected");
+          Navigator.of(context).pop();
           setState(() {
             _isLoading = false;
           });
@@ -85,12 +92,10 @@ class _AddBlogBottomSheetState extends State<AddBlogBottomSheet> {
 
         final provider = Provider.of<BlogProvider>(context, listen: false);
 
-        // ✅ UPLOAD IMAGE TO CLOUDINARY
-        print("Uploading image to Cloudinary...");
+        print("🔥 Uploading image to Cloudinary");
         String imageUrl = await provider.uploadImage(_selectedImage!);
-        print("Image uploaded. URL: $imageUrl");
+        print("🔥 Image uploaded. URL: $imageUrl");
 
-        // ✅ CREATE BLOG MODEL
         final uuid = Uuid();
         BlogModel newBlog = BlogModel(
           id: uuid.v4(),
@@ -101,15 +106,13 @@ class _AddBlogBottomSheetState extends State<AddBlogBottomSheet> {
           imagePath: imageUrl,
         );
 
-        print("Creating blog: ${newBlog.title}");
-
-        // ✅ SAVE TO FIRESTORE
+        print("🔥 Creating blog: ${newBlog.title}");
         await provider.addBlog(newBlog);
-        print("Blog saved to Firestore");
+        print("🔥 Blog saved to Firestore");
 
-        // ✅ SUCCESS - CLEAN UP
-        Navigator.of(context).pop(); // Remove loading dialog
-        Navigator.of(context).pop(); // Close bottom sheet
+        print("🔥 Cleaning up");
+        Navigator.of(context).pop();
+        Navigator.of(context).pop();
 
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -121,14 +124,10 @@ class _AddBlogBottomSheetState extends State<AddBlogBottomSheet> {
           ),
         );
 
-        // ✅ CLEAR FORM
         _clearForm();
       } catch (e) {
-        // ✅ ERROR HANDLING
-        print("Error in _addToBlogList: $e");
-
-        Navigator.of(context).pop(); // Remove loading dialog
-
+        print("🔥 Error in _addToBlogList: $e");
+        Navigator.of(context).pop();
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             backgroundColor: Colors.red,
@@ -137,14 +136,12 @@ class _AddBlogBottomSheetState extends State<AddBlogBottomSheet> {
           ),
         );
       } finally {
-        // ✅ ALWAYS RESET LOADING STATE
         setState(() {
           _isLoading = false;
         });
       }
     } else {
-      // Form validation failed
-      print("Form validation failed");
+      print("🔥 Form validation failed");
     }
   }
 
@@ -266,7 +263,12 @@ class _AddBlogBottomSheetState extends State<AddBlogBottomSheet> {
                     ),
 
                   // Text field for blog content
-                  TextFieldBottomSheet(
+                  BlogContentTextFieldBottomSheet(
+                    validator: (value) =>
+                        _validateField(value, 'Blog content'), // Add validator
+                    onFieldSubmitted: (value) {
+                      _formKey.currentState?.validate();
+                    },
                     controller: _blogContentController,
                     hintText: "Blog content",
                   ),
