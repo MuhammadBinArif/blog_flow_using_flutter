@@ -224,12 +224,6 @@
       "languageVersion": "3.0"
     },
     {
-      "name": "flutter_lints",
-      "rootUri": "file:///home/manjaro/.pub-cache/hosted/pub.dev/flutter_lints-5.0.0",
-      "packageUri": "lib/",
-      "languageVersion": "3.5"
-    },
-    {
       "name": "flutter_plugin_android_lifecycle",
       "rootUri": "file:///home/manjaro/.pub-cache/hosted/pub.dev/flutter_plugin_android_lifecycle-2.0.33",
       "packageUri": "lib/",
@@ -297,7 +291,7 @@
     },
     {
       "name": "image_picker_ios",
-      "rootUri": "file:///home/manjaro/.pub-cache/hosted/pub.dev/image_picker_ios-0.8.13+2",
+      "rootUri": "file:///home/manjaro/.pub-cache/hosted/pub.dev/image_picker_ios-0.8.13+3",
       "packageUri": "lib/",
       "languageVersion": "3.9"
     },
@@ -350,12 +344,6 @@
       "languageVersion": "3.2"
     },
     {
-      "name": "lints",
-      "rootUri": "file:///home/manjaro/.pub-cache/hosted/pub.dev/lints-5.1.1",
-      "packageUri": "lib/",
-      "languageVersion": "3.6"
-    },
-    {
       "name": "matcher",
       "rootUri": "file:///home/manjaro/.pub-cache/hosted/pub.dev/matcher-0.12.17",
       "packageUri": "lib/",
@@ -369,9 +357,9 @@
     },
     {
       "name": "meta",
-      "rootUri": "file:///home/manjaro/.pub-cache/hosted/pub.dev/meta-1.16.0",
+      "rootUri": "file:///home/manjaro/.pub-cache/hosted/pub.dev/meta-1.17.0",
       "packageUri": "lib/",
-      "languageVersion": "2.12"
+      "languageVersion": "3.5"
     },
     {
       "name": "mime",
@@ -471,13 +459,13 @@
     },
     {
       "name": "shared_preferences",
-      "rootUri": "file:///home/manjaro/.pub-cache/hosted/pub.dev/shared_preferences-2.5.3",
+      "rootUri": "file:///home/manjaro/.pub-cache/hosted/pub.dev/shared_preferences-2.5.4",
       "packageUri": "lib/",
-      "languageVersion": "3.5"
+      "languageVersion": "3.9"
     },
     {
       "name": "shared_preferences_android",
-      "rootUri": "file:///home/manjaro/.pub-cache/hosted/pub.dev/shared_preferences_android-2.4.17",
+      "rootUri": "file:///home/manjaro/.pub-cache/hosted/pub.dev/shared_preferences_android-2.4.18",
       "packageUri": "lib/",
       "languageVersion": "3.9"
     },
@@ -585,7 +573,7 @@
     },
     {
       "name": "test_api",
-      "rootUri": "file:///home/manjaro/.pub-cache/hosted/pub.dev/test_api-0.7.6",
+      "rootUri": "file:///home/manjaro/.pub-cache/hosted/pub.dev/test_api-0.7.7",
       "packageUri": "lib/",
       "languageVersion": "3.5"
     },
@@ -621,7 +609,7 @@
     },
     {
       "name": "video_player_android",
-      "rootUri": "file:///home/manjaro/.pub-cache/hosted/pub.dev/video_player_android-2.8.21",
+      "rootUri": "file:///home/manjaro/.pub-cache/hosted/pub.dev/video_player_android-2.8.22",
       "packageUri": "lib/",
       "languageVersion": "3.9"
     },
@@ -681,8 +669,8 @@
     }
   ],
   "generator": "pub",
-  "generatorVersion": "3.9.2",
+  "generatorVersion": "3.10.3",
   "flutterRoot": "file:///home/manjaro/snap/flutter/common/flutter",
-  "flutterVersion": "3.35.7",
+  "flutterVersion": "3.38.4",
   "pubCache": "file:///home/manjaro/.pub-cache"
 }

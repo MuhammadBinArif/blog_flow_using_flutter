@@ -1,14 +1,11 @@
 import 'dart:io' show File;
 
 import 'package:blog_app_flutter/model/blog_model.dart';
-import 'package:blog_app_flutter/pages/image_helper.dart';
 import 'package:blog_app_flutter/pages/image_picker_screen.dart';
 import 'package:blog_app_flutter/providers/blog_provider.dart';
 import 'package:blog_app_flutter/widgets/form_field_bottom_sheet.dart';
 import 'package:blog_app_flutter/widgets/blog_content_text_field_bottom_sheet.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 

@@ -1,8 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:cloudinary_flutter/cloudinary_context.dart';
-import 'package:cloudinary_flutter/cloudinary_object.dart';
 import 'package:http/http.dart' as http;
 
 class CloudinaryService {
