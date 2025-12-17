@@ -1,4 +1,3 @@
-import 'package:blog_app_flutter/pages/home_page.dart';
 import 'package:blog_app_flutter/pages/main_page.dart';
 import 'package:blog_app_flutter/services/firebase_authentication_service.dart';
 import 'package:flutter/material.dart';
