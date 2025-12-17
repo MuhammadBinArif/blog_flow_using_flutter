@@ -1,3 +1,4 @@
+import 'package:blog_app_flutter/pages/authentication_screen.dart';
 import 'package:blog_app_flutter/pages/main_page.dart';
 import 'package:blog_app_flutter/providers/blog_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -26,7 +27,7 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         home: ChangeNotifierProvider(
           create: (context) => BlogProvider(),
-          child: MainPage(),
+          child: AuthenticationScreen(),
         ),
       ),
     );
