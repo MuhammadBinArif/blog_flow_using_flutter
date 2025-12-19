@@ -1,6 +1,6 @@
 #!/bin/sh
 # This is a generated file; do not edit or check into version control.
-export "FLUTTER_ROOT=/home/pop_os/flutter"
+export "FLUTTER_ROOT=/home/pop_os/development/flutter"
 export "FLUTTER_APPLICATION_PATH=/media/drive1/Downloads/C_Drive_data/Flutter Project/blog_flow_using_flutter"
 export "COCOAPODS_PARALLEL_CODE_SIGN=true"
 export "FLUTTER_TARGET=lib/main.dart"
