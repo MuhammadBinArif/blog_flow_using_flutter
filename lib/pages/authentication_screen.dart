@@ -93,6 +93,10 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                 prefixIcon: Icon(Icons.password),
               ),
             ),
+            ElevatedButton(
+              onPressed: _submit,
+              child: const Text("Submit Blog!"),
+            ),
           ],
         ),
       ),
