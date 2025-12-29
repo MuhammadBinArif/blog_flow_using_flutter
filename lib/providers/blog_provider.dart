@@ -28,7 +28,6 @@ class BlogProvider extends ChangeNotifier {
     }
   }
 
-  // ✅ UPDATE YOUR EXISTING addBlog METHOD
   Future<void> addBlog(BlogModel blog) async {
     try {
       await _firestore.collection("blogs").doc(blog.id).set({
@@ -36,8 +35,9 @@ class BlogProvider extends ChangeNotifier {
         "title": blog.title,
         "subtitle": blog.subtitle,
         "authorName": blog.authorName,
-        "blogContent": blog.blogContent, // ✅ ADD THIS
-        "imagePath": blog.imagePath, // ✅ ADD THIS
+        "blogContent": blog.blogContent,
+        "imagePath": blog.imagePath,
+        "authorId": blog.authorId, // 👈 ADD THIS LINE
         "createdAt": FieldValue.serverTimestamp(),
       });
 
@@ -49,9 +49,48 @@ class BlogProvider extends ChangeNotifier {
       } else {
         print("Unexpected error: $e");
       }
-      rethrow; // Important for error handling in UI
+      rethrow;
     }
   }
+
+  // ✅ NEW METHOD: Get blogs grouped by authorId
+  Map<String, List<BlogModel>> getBlogsGroupedByAuthor() {
+    final grouped = <String, List<BlogModel>>{};
+
+    for (final blog in _blogs) {
+      if (!grouped.containsKey(blog.authorId)) {
+        grouped[blog.authorId] = [];
+      }
+      grouped[blog.authorId]!.add(blog);
+    }
+
+    return grouped;
+  }
+
+  // // ✅ UPDATE YOUR EXISTING addBlog METHOD
+  // Future<void> addBlog(BlogModel blog) async {
+  //   try {
+  //     await _firestore.collection("blogs").doc(blog.id).set({
+  //       "id": blog.id,
+  //       "title": blog.title,
+  //       "subtitle": blog.subtitle,
+  //       "authorName": blog.authorName,
+  //       "blogContent": blog.blogContent, // ✅ ADD THIS
+  //       "imagePath": blog.imagePath, // ✅ ADD THIS
+  //       "createdAt": FieldValue.serverTimestamp(),
+  //     });
+
+  //     _blogs.add(blog);
+  //     notifyListeners();
+  //   } catch (e) {
+  //     if (e is FirebaseException) {
+  //       print("Firestore error: ${e.code} - ${e.message}");
+  //     } else {
+  //       print("Unexpected error: $e");
+  //     }
+  //     rethrow; // Important for error handling in UI
+  //   }
+  // }
 
   // Fetch blogs from firestore
   Future<void> fetchBlogs() async {
@@ -61,11 +100,13 @@ class BlogProvider extends ChangeNotifier {
         final data = doc.data();
         return BlogModel(
           id: doc.id,
-          title: data["title"],
-          subtitle: data["subtitle"],
-          authorName: data["authorName"],
-          blogContent: data["blogContent"],
-          imagePath: data["imagePath"],
+          title: data["title"] as String? ?? "", // 👈 Safe cast + fallback
+          subtitle: data["subtitle"] as String? ?? "",
+          authorName: data["authorName"] as String? ?? "",
+          blogContent: data["blogContent"] as String? ?? "",
+          imagePath: data["imagePath"] as String? ?? "",
+          authorId:
+              data["authorId"] as String? ?? "unknown_author", // ✅ Add fallback
         );
       }).toList();
       notifyListeners();
@@ -83,11 +124,12 @@ class BlogProvider extends ChangeNotifier {
           final data = doc.data();
           return BlogModel(
             id: doc.id,
-            title: data["title"] ?? "",
-            subtitle: data["subtitle"] ?? "",
-            authorName: data["authorName"] ?? "",
-            blogContent: data["blogContent"] ?? "",
-            imagePath: data["imagePath"] ?? "",
+            title: data["title"] as String? ?? "", // 👈 Cast + fallback
+            subtitle: data["subtitle"] as String? ?? "",
+            authorName: data["authorName"] as String? ?? "",
+            blogContent: data["blogContent"] as String? ?? "",
+            imagePath: data["imagePath"] as String? ?? "",
+            authorId: data["authorId"] as String? ?? "", // ✅ ADD THIS LINE
           );
         }).toList();
         notifyListeners();

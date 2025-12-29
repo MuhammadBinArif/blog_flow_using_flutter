@@ -1,3 +1,4 @@
+import 'package:blog_app_flutter/pages/favourite_page.dart';
 import 'package:blog_app_flutter/providers/blog_provider.dart';
 import 'package:blog_app_flutter/widgets/add_blog_container.dart';
 import 'package:blog_app_flutter/widgets/my_blog_card.dart';
@@ -109,7 +110,20 @@ class _MainPageState extends State<MainPage> {
         ),
         selectedIndex: currentIndex,
         indicatorColor: Color(0xFF606c38),
-        onDestinationSelected: (index) => setState(() => currentIndex = index),
+        onDestinationSelected: (index) {
+          setState(() => currentIndex = index);
+
+          // Navigate to different pages based on index
+          if (index == 2) {
+            // Assuming "Favourite" is index 2
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const FavouritePage()),
+            );
+          }
+        },
+
+        // onDestinationSelected: (index) => setState(() => currentIndex = index),
         destinations: [
           NavigationDestination(
             icon: Icon(Icons.home, color: Color(0xFFfefae0), size: 30),
@@ -123,6 +137,10 @@ class _MainPageState extends State<MainPage> {
             icon: Icon(Icons.book, color: Color(0xFFfefae0), size: 30),
             label: "Favourite",
           ),
+          // NavigationDestination(
+          //   icon: Icon(Icons.book, color: Color(0xFFfefae0), size: 30),
+          //   label: "Favourite",
+          // ),
           NavigationDestination(
             icon: Icon(Icons.person, color: Color(0xFFfefae0), size: 30),
             label: "Profile",

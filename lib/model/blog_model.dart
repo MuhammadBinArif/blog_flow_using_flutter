@@ -1,4 +1,6 @@
+// Add this import
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:uuid/uuid.dart';
 
 class BlogModel {
   final String? id;
@@ -7,6 +9,7 @@ class BlogModel {
   final String authorName;
   final String imagePath;
   final String blogContent;
+  final String authorId; // 👈 NEW FIELD
   int views;
 
   BlogModel({
@@ -16,8 +19,30 @@ class BlogModel {
     required this.authorName,
     required this.imagePath,
     required this.blogContent,
+    required this.authorId, // 👈 REQUIRED NOW
     this.views = 100,
   });
+
+  // Generate a new unique authorId when creating a blog
+  factory BlogModel.create({
+    required String title,
+    required String subtitle,
+    required String authorName,
+    required String imagePath,
+    required String blogContent,
+  }) {
+    final uuid = Uuid();
+    return BlogModel(
+      id: null, // Firestore will generate this
+      title: title,
+      subtitle: subtitle,
+      authorName: authorName,
+      imagePath: imagePath,
+      blogContent: blogContent,
+      authorId: uuid.v4(), // 👈 Generate unique authorId
+      views: 100,
+    );
+  }
 
   Map<String, dynamic> toJson() {
     return {
@@ -26,6 +51,7 @@ class BlogModel {
       "authorName": authorName,
       "imagePath": imagePath,
       "blogContent": blogContent,
+      "authorId": authorId, // 👈 SAVE TO FIRESTORE
       "createdAt": FieldValue.serverTimestamp(),
     };
   }
@@ -37,6 +63,7 @@ class BlogModel {
     String? authorName,
     String? imagePath,
     String? blogContent,
+    String? authorId, // 👈 OPTIONAL FOR COPYWITH
     int? views,
   }) {
     return BlogModel(
@@ -46,10 +73,64 @@ class BlogModel {
       authorName: authorName ?? this.authorName,
       imagePath: imagePath ?? this.imagePath,
       blogContent: blogContent ?? this.blogContent,
+      authorId: authorId ?? this.authorId, // 👈 UPDATE AUTHOR ID IF NEEDED
       views: views ?? this.views,
     );
   }
 }
+
+// import 'package:cloud_firestore/cloud_firestore.dart';
+
+// class BlogModel {
+//   final String? id;
+//   final String title;
+//   final String subtitle;
+//   final String authorName;
+//   final String imagePath;
+//   final String blogContent;
+//   int views;
+
+//   BlogModel({
+//     required this.id,
+//     required this.title,
+//     required this.subtitle,
+//     required this.authorName,
+//     required this.imagePath,
+//     required this.blogContent,
+//     this.views = 100,
+//   });
+
+//   Map<String, dynamic> toJson() {
+//     return {
+//       "title": title,
+//       "subtitle": subtitle,
+//       "authorName": authorName,
+//       "imagePath": imagePath,
+//       "blogContent": blogContent,
+//       "createdAt": FieldValue.serverTimestamp(),
+//     };
+//   }
+
+//   BlogModel copyWith({
+//     String? id,
+//     String? title,
+//     String? subtitle,
+//     String? authorName,
+//     String? imagePath,
+//     String? blogContent,
+//     int? views,
+//   }) {
+//     return BlogModel(
+//       id: id ?? this.id,
+//       title: title ?? this.title,
+//       subtitle: subtitle ?? this.subtitle,
+//       authorName: authorName ?? this.authorName,
+//       imagePath: imagePath ?? this.imagePath,
+//       blogContent: blogContent ?? this.blogContent,
+//       views: views ?? this.views,
+//     );
+//   }
+// }
 
 // List<BlogModel> blog = [
 //   BlogModel(

@@ -23,7 +23,6 @@ class _AddBlogBottomSheetState extends State<AddBlogBottomSheet> {
   final _authorNameController = TextEditingController();
   final _blogContentController = TextEditingController();
 
-
   // Add this variable to store the selected image
   File? _selectedImage;
   bool _isLoading = false;
@@ -101,6 +100,7 @@ class _AddBlogBottomSheetState extends State<AddBlogBottomSheet> {
           authorName: _authorNameController.text,
           blogContent: _blogContentController.text,
           imagePath: imageUrl,
+          authorId: uuid.v4(), // ✅ Generate unique authorId here
         );
 
         print("🔥 Creating blog: ${newBlog.title}");
