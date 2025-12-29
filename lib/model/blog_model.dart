@@ -30,14 +30,23 @@ class BlogModel {
     };
   }
 
-  BlogModel copyWith({String? id}) {
+  BlogModel copyWith({
+    String? id,
+    String? title,
+    String? subtitle,
+    String? authorName,
+    String? imagePath,
+    String? blogContent,
+    int? views,
+  }) {
     return BlogModel(
       id: id ?? this.id,
-      title: title,
-      subtitle: subtitle,
-      authorName: authorName,
-      imagePath: imagePath,
-      blogContent: blogContent,
+      title: title ?? this.title,
+      subtitle: subtitle ?? this.subtitle,
+      authorName: authorName ?? this.authorName,
+      imagePath: imagePath ?? this.imagePath,
+      blogContent: blogContent ?? this.blogContent,
+      views: views ?? this.views,
     );
   }
 }

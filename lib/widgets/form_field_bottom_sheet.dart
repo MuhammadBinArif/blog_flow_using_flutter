@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 
 class FormFieldBottomSheet extends StatelessWidget {
-  Color cursorColor;
+  final Color cursorColor;
   final String hintText;
-  Color hintStyleColor;
+  final Color hintStyleColor;
   final double fontSize;
   final FontWeight fontWeight;
   final TextEditingController controller;
   final String? Function(String?)? validator;
+  final Function(String?)? onFieldSubmitted;
 
   FormFieldBottomSheet({
     super.key,
@@ -17,8 +18,8 @@ class FormFieldBottomSheet extends StatelessWidget {
     required this.fontSize,
     required this.fontWeight,
     required this.controller,
-    required this.validator,
-    required Null Function(dynamic value) onFieldSubmitted,
+    this.validator,
+    this.onFieldSubmitted,
   });
 
   @override
@@ -39,6 +40,7 @@ class FormFieldBottomSheet extends StatelessWidget {
         validator: validator,
         controller: controller,
         cursorColor: cursorColor,
+        onFieldSubmitted: onFieldSubmitted,
         decoration: InputDecoration(
           border: InputBorder.none,
           hintText: hintText,

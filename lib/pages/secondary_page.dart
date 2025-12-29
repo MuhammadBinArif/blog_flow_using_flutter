@@ -1,5 +1,5 @@
 import 'package:blog_app_flutter/model/blog_model.dart';
-import 'package:blog_app_flutter/pages/main_page.dart';
+
 import 'package:blog_app_flutter/widgets/add_blog_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -32,9 +32,7 @@ class _SecondaryPageState extends State<SecondaryPage> {
       appBar: AppBar(
         leading: GestureDetector(
           onTap: () {
-            Navigator.of(
-              context,
-            ).push(MaterialPageRoute(builder: (context) => MainPage()));
+            Navigator.of(context).pop();
           },
           child: Icon(
             Icons.arrow_back,

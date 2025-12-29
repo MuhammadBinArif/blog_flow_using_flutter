@@ -22,13 +22,9 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => BlogProvider(), lazy: false),
+        ChangeNotifierProvider(create: (_) => AuthProvider()),
       ],
-      child: MaterialApp(
-        home: ChangeNotifierProvider(
-          create: (context) => BlogProvider(),
-          child: AuthenticationScreen(),
-        ),
-      ),
+      child: MaterialApp(home: const AuthenticationScreen()),
     );
   }
 }

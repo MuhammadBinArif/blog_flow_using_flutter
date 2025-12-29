@@ -4,12 +4,13 @@ class BlogContentTextFieldBottomSheet extends StatelessWidget {
   final TextEditingController controller;
   final String hintText;
   final String? Function(String?)? validator;
+  final Function(String?)? onFieldSubmitted;
   const BlogContentTextFieldBottomSheet({
     super.key,
     required this.controller,
     required this.hintText,
-    required this.validator,
-    required Null Function(dynamic value) onFieldSubmitted,
+    this.validator,
+    this.onFieldSubmitted,
   });
 
   @override
@@ -30,6 +31,7 @@ class BlogContentTextFieldBottomSheet extends StatelessWidget {
               validator: validator,
               cursorColor: const Color(0xFF90a955),
               controller: controller,
+              onFieldSubmitted: onFieldSubmitted,
               decoration: InputDecoration(
                 hintText: hintText,
                 border: InputBorder.none,

@@ -75,4 +75,5 @@ class DefaultFirebaseOptions {
     storageBucket: 'blog-flow-using-flutter.firebasestorage.app',
     iosBundleId: 'com.example.blogAppFlutter',
   );
+
 }

@@ -31,7 +31,7 @@ class BlogProvider extends ChangeNotifier {
   // ✅ UPDATE YOUR EXISTING addBlog METHOD
   Future<void> addBlog(BlogModel blog) async {
     try {
-      final docRef = await _firestore.collection("blogs").doc(blog.id).set({
+      await _firestore.collection("blogs").doc(blog.id).set({
         "id": blog.id,
         "title": blog.title,
         "subtitle": blog.subtitle,

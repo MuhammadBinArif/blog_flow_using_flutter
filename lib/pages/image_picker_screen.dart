@@ -1,6 +1,6 @@
 import 'package:blog_app_flutter/pages/image_helper.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
+
 import 'dart:io';
 
 class ImagePickerScreen extends StatefulWidget {
@@ -13,7 +13,7 @@ class ImagePickerScreen extends StatefulWidget {
 
 class _ImagePickerScreenState extends State<ImagePickerScreen> {
   File? selectedImage;
-  final ImagePicker _picker = ImagePicker();
+
 
   // Method to pick image from camera
   Future<void> _pickImageFromCamera() async {

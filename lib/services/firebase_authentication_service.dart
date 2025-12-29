@@ -1,16 +1,84 @@
 import 'package:firebase_auth/firebase_auth.dart';
 
 class FirebaseAuthenticationService {
-  // Creating Firebase authentication instance
   final FirebaseAuth _authentication = FirebaseAuth.instance;
 
-  // Getting the current user
   User? get currentUser => _authentication.currentUser;
-
-  // Check if user is logged in
   bool get isLoggedIn => currentUser != null;
 
   // Sign up (Register new user)
+  Future<String?> signUp(String email, String password) async {
+    try {
+      await _authentication.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      return null; // Success! No error
+    } on FirebaseAuthException catch (e) {
+      // Handle common Firebase errors with user-friendly messages
+      switch (e.code) {
+        case 'weak-password':
+          return 'Password is too weak. Use at least 6 characters.';
+        case 'email-already-in-use':
+          return 'This email is already registered.';
+        case 'invalid-email':
+          return 'Please enter a valid email address.';
+        case 'operation-not-allowed':
+          return 'Email/password accounts are not enabled.';
+        default:
+          // For all other Firebase errors, return a clear message
+          return 'Sign up failed: ${e.message ?? e.code}';
+      }
+    } catch (e) {
+      // Catch any other exceptions
+      return 'Something went wrong. Please try again.';
+    }
+  }
+
+  // Sign in (Log in)
+  Future<String?> signIn(String email, String password) async {
+    try {
+      await _authentication.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      return null; // Success! No error
+    } on FirebaseAuthException catch (e) {
+      // Handle common Firebase errors with user-friendly messages
+      switch (e.code) {
+        case 'user-not-found':
+          return 'No account found with this email.';
+        case 'wrong-password':
+          return 'Incorrect password.';
+        case 'invalid-email':
+          return 'Please enter a valid email address.';
+        case 'user-disabled':
+          return 'This account has been disabled.';
+        case 'too-many-requests':
+          return 'Too many attempts. Try again later.';
+        default:
+          // For all other Firebase errors, return a clear message
+          return 'Login failed: ${e.message ?? e.code}';
+      }
+    } catch (e) {
+      // Catch any other exceptions
+      return 'Something went wrong. Please try again.';
+    }
+  }
+
+  // Signout (Logout)
+  Future<void> signOut() async {
+    await _authentication.signOut();
+  }
+
+  // Listen to authentication changes
+  Stream<User?> get authenticationStateChanges =>
+      _authentication.authStateChanges();
+}
+
+/**
+ * 
+ *  // Sign up (Register new user)
   Future<String?> signUp(String email, String password) async {
     try {
       await _authentication.createUserWithEmailAndPassword(
@@ -36,22 +104,14 @@ class FirebaseAuthenticationService {
         password: password,
       );
       return null; // Success! No error
-    } on FirebaseException catch (e) {
+    } on FirebaseAuthException catch (e) {
       if (e.code == "user-not-found") {
         return "No user found with this email";
       } else if (e.code == "wrong-password") {
         return "wrong password";
       }
-      return null;
+      return e.message;
     }
   }
-
-  // Signout (Logout)
-  Future<void> signOut() async {
-    await _authentication.signOut();
-  }
-
-  // Listen to authentication changes
-  Stream<User?> get authenticationStateChanges =>
-      _authentication.authStateChanges();
-}
+ * 
+ */

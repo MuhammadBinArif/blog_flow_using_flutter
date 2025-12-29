@@ -22,7 +22,7 @@ class _AddBlogBottomSheetState extends State<AddBlogBottomSheet> {
   final _subtitleController = TextEditingController();
   final _authorNameController = TextEditingController();
   final _blogContentController = TextEditingController();
-  final ImagePickerScreen _pickImage = ImagePickerScreen();
+
 
   // Add this variable to store the selected image
   File? _selectedImage;
@@ -194,9 +194,6 @@ class _AddBlogBottomSheetState extends State<AddBlogBottomSheet> {
                     fontWeight: FontWeight.bold,
                     validator: (value) =>
                         _validateField(value, 'title'), // Add validator
-                    onFieldSubmitted: (value) {
-                      _formKey.currentState?.validate();
-                    },
                   ),
                   SizedBox(height: height * 0.02),
 
@@ -208,9 +205,6 @@ class _AddBlogBottomSheetState extends State<AddBlogBottomSheet> {
                     fontWeight: FontWeight.w700,
                     validator: (value) =>
                         _validateField(value, 'subtitle'), // Add validator
-                    onFieldSubmitted: (value) {
-                      _formKey.currentState?.validate();
-                    },
                   ),
                   SizedBox(height: height * 0.02),
 
@@ -222,9 +216,6 @@ class _AddBlogBottomSheetState extends State<AddBlogBottomSheet> {
                     fontWeight: FontWeight.w800,
                     validator: (value) =>
                         _validateField(value, 'author name'), // Add validator
-                    onFieldSubmitted: (value) {
-                      _formKey.currentState?.validate();
-                    },
                   ),
                   SizedBox(height: height * 0.02),
 
@@ -263,9 +254,6 @@ class _AddBlogBottomSheetState extends State<AddBlogBottomSheet> {
                   BlogContentTextFieldBottomSheet(
                     validator: (value) =>
                         _validateField(value, 'Blog content'), // Add validator
-                    onFieldSubmitted: (value) {
-                      _formKey.currentState?.validate();
-                    },
                     controller: _blogContentController,
                     hintText: "Blog content",
                   ),
