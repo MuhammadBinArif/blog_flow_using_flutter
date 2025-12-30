@@ -1,4 +1,3 @@
-import 'package:blog_app_flutter/model/blog_model.dart';
 import 'package:blog_app_flutter/providers/blog_provider.dart';
 import 'package:blog_app_flutter/widgets/my_blog_card.dart';
 import 'package:flutter/material.dart';

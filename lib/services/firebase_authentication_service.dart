@@ -13,6 +13,10 @@ class FirebaseAuthenticationService {
         email: email,
         password: password,
       );
+
+      // Send verification email immediately after signup
+      await sendEmailVerification();
+
       return null; // Success! No error
     } on FirebaseAuthException catch (e) {
       // Handle common Firebase errors with user-friendly messages
@@ -42,6 +46,13 @@ class FirebaseAuthenticationService {
         email: email,
         password: password,
       );
+
+      // Check if email is verified
+      final user = _authentication.currentUser;
+      if (user != null && !user.emailVerified) {
+        return 'Please verify your email before logging in.';
+      }
+
       return null; // Success! No error
     } on FirebaseAuthException catch (e) {
       // Handle common Firebase errors with user-friendly messages
@@ -65,6 +76,17 @@ class FirebaseAuthenticationService {
       return 'Something went wrong. Please try again.';
     }
   }
+
+  // For Email-verification
+  Future<void> sendEmailVerification() async {
+    final user = _authentication.currentUser;
+    if (user != null) {
+      await user.sendEmailVerification();
+    }
+  }
+
+  bool get isEmailVerified =>
+      _authentication.currentUser?.emailVerified == true;
 
   // Signout (Logout)
   Future<void> signOut() async {

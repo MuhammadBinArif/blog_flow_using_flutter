@@ -1,4 +1,5 @@
 import 'package:blog_app_flutter/pages/authentication_screen.dart';
+import 'package:blog_app_flutter/providers/auth_provider.dart';
 import 'package:blog_app_flutter/providers/blog_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
