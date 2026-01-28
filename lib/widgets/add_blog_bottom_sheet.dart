@@ -17,13 +17,12 @@ class AddBlogBottomSheet extends StatefulWidget {
 }
 
 class _AddBlogBottomSheetState extends State<AddBlogBottomSheet> {
-  final _formKey = GlobalKey<FormState>(); // Form key for validation
+  final _formKey = GlobalKey<FormState>();
   final _titleController = TextEditingController();
   final _subtitleController = TextEditingController();
   final _authorNameController = TextEditingController();
   final _blogContentController = TextEditingController();
 
-  // Add this variable to store the selected image
   File? _selectedImage;
   bool _isLoading = false;
 
@@ -36,32 +35,23 @@ class _AddBlogBottomSheetState extends State<AddBlogBottomSheet> {
     super.dispose();
   }
 
-  // Simple validation function
   String? _validateField(String? value, String fieldName) {
     if (value == null || value.trim().isEmpty) {
-      return 'Please enter $fieldName'; // This shows below the field
+      return 'Please enter $fieldName';
     }
-    return null; // Return null if valid
+    return null;
   }
 
   void _addToBlogList() async {
-    print("🔥 BUTTON WAS TAPPED! _isLoading = $_isLoading");
-    if (_isLoading) {
-      print("🔥 Button is disabled because _isLoading is true.");
-      return;
-    }
+    if (_isLoading) return;
 
-    print("🔥 About to call validate()");
     bool isValid = _formKey.currentState?.validate() ?? false;
-    print("🔥 validate() returned: $isValid");
 
     if (isValid) {
-      print("🔥 Form validation passed.");
       setState(() {
         _isLoading = true;
       });
 
-      print("🔥 Showing loading dialog");
       showDialog(
         context: context,
         barrierDismissible: false,
@@ -70,9 +60,7 @@ class _AddBlogBottomSheetState extends State<AddBlogBottomSheet> {
       );
 
       try {
-        print("🔥 Checking for selected image");
         if (_selectedImage == null) {
-          print("🔥 No image selected");
           Navigator.of(context).pop();
           setState(() {
             _isLoading = false;
@@ -87,10 +75,7 @@ class _AddBlogBottomSheetState extends State<AddBlogBottomSheet> {
         }
 
         final provider = Provider.of<BlogProvider>(context, listen: false);
-
-        print("🔥 Uploading image to Cloudinary");
         String imageUrl = await provider.uploadImage(_selectedImage!);
-        print("🔥 Image uploaded. URL: $imageUrl");
 
         final uuid = Uuid();
         BlogModel newBlog = BlogModel(
@@ -100,16 +85,13 @@ class _AddBlogBottomSheetState extends State<AddBlogBottomSheet> {
           authorName: _authorNameController.text,
           blogContent: _blogContentController.text,
           imagePath: imageUrl,
-          authorId: uuid.v4(), // ✅ Generate unique authorId here
+          authorId: uuid.v4(),
         );
 
-        print("🔥 Creating blog: ${newBlog.title}");
         await provider.addBlog(newBlog);
-        print("🔥 Blog saved to Firestore");
 
-        print("🔥 Cleaning up");
-        Navigator.of(context).pop();
-        Navigator.of(context).pop();
+        Navigator.of(context).pop(); // Close loading
+        Navigator.of(context).pop(); // Close bottom sheet
 
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -123,7 +105,6 @@ class _AddBlogBottomSheetState extends State<AddBlogBottomSheet> {
 
         _clearForm();
       } catch (e) {
-        print("🔥 Error in _addToBlogList: $e");
         Navigator.of(context).pop();
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -137,12 +118,9 @@ class _AddBlogBottomSheetState extends State<AddBlogBottomSheet> {
           _isLoading = false;
         });
       }
-    } else {
-      print("🔥 Form validation failed");
     }
   }
 
-  // ✅ ADD CLEAR FORM METHOD
   void _clearForm() {
     _titleController.clear();
     _subtitleController.clear();
@@ -159,140 +137,147 @@ class _AddBlogBottomSheetState extends State<AddBlogBottomSheet> {
     var width = size.width;
     var height = size.height;
 
-    return Container(
-      width: width,
-      height: height * 0.8, // Increased height for error messages
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(30),
-          topRight: Radius.circular(30),
-        ),
-        color: Color(0xFF90a955),
+    // Wrap everything with AnimatedPadding + SingleChildScrollView
+    return AnimatedPadding(
+      duration: Duration(milliseconds: 300),
+      curve: Curves.easeOut,
+      padding: EdgeInsets.only(
+        bottom: MediaQuery.of(context).viewInsets.bottom,
       ),
-      child: Container(
-        margin: EdgeInsets.all(7),
-        decoration: BoxDecoration(
-          color: Color(0xFFecf39e),
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(30),
-            topRight: Radius.circular(30),
+      child: SingleChildScrollView(
+        reverse: true, // Scrolls to keep focused field visible
+        child: Container(
+          width: width,
+          // REMOVED fixed height: height * 0.8
+          // Now it expands naturally with keyboard
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(30),
+              topRight: Radius.circular(30),
+            ),
+            color: const Color.fromARGB(255, 32, 73, 70),
           ),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.only(left: 10, top: 20, right: 10),
-          child: Form(
-            // Wrap with Form widget
-            key: _formKey, // Attach the form key
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  // Title field with validation
-                  FormFieldBottomSheet(
-                    controller: _titleController,
-                    hintText: "Title",
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                    validator: (value) =>
-                        _validateField(value, 'title'), // Add validator
-                  ),
-                  SizedBox(height: height * 0.02),
+          child: Container(
+            margin: EdgeInsets.all(7),
+            decoration: BoxDecoration(
+              color: const Color(0xFFffffff),
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(30),
+                topRight: Radius.circular(30),
+              ),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.only(left: 10, top: 20, right: 10),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min, // Critical: allows shrinking
+                  children: [
+                    // Title field
+                    FormFieldBottomSheet(
+                      controller: _titleController,
+                      hintText: "Title",
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                      validator: (value) => _validateField(value, 'title'),
+                    ),
+                    SizedBox(height: height * 0.02),
 
-                  // Subtitle field with validation
-                  FormFieldBottomSheet(
-                    controller: _subtitleController,
-                    hintText: "Subtitle",
-                    fontSize: 18,
-                    fontWeight: FontWeight.w700,
-                    validator: (value) =>
-                        _validateField(value, 'subtitle'), // Add validator
-                  ),
-                  SizedBox(height: height * 0.02),
+                    // Subtitle field
+                    FormFieldBottomSheet(
+                      controller: _subtitleController,
+                      hintText: "Subtitle",
+                      fontSize: 18,
+                      fontWeight: FontWeight.w700,
+                      validator: (value) => _validateField(value, 'subtitle'),
+                    ),
+                    SizedBox(height: height * 0.02),
 
-                  // Author field with validation
-                  FormFieldBottomSheet(
-                    controller: _authorNameController,
-                    hintText: "Author name",
-                    fontSize: 22,
-                    fontWeight: FontWeight.w800,
-                    validator: (value) =>
-                        _validateField(value, 'author name'), // Add validator
-                  ),
-                  SizedBox(height: height * 0.02),
+                    // Author field
+                    FormFieldBottomSheet(
+                      controller: _authorNameController,
+                      hintText: "Author name",
+                      fontSize: 22,
+                      fontWeight: FontWeight.w800,
+                      validator: (value) =>
+                          _validateField(value, 'author name'),
+                    ),
+                    SizedBox(height: height * 0.02),
 
-                  // Container to show selected image
-                  ImagePickerScreen(
-                    onImageSelected: (File? image) {
-                      setState(() {
-                        _selectedImage = image;
-                      });
-                    },
-                  ),
+                    // Image picker
+                    ImagePickerScreen(
+                      onImageSelected: (File? image) {
+                        setState(() {
+                          _selectedImage = image;
+                        });
+                      },
+                    ),
+                    SizedBox(height: height * 0.02),
 
-                  SizedBox(height: height * 0.02),
-
-                  // Remove image button (only show when image is selected)
-                  if (_selectedImage != null)
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 8.0),
-                      child: ElevatedButton(
-                        onPressed: () {
-                          setState(() {
-                            _selectedImage = null;
-                          });
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.red,
+                    // Remove image button
+                    if (_selectedImage != null)
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 8.0),
+                        child: ElevatedButton(
+                          onPressed: () {
+                            setState(() {
+                              _selectedImage = null;
+                            });
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.red,
+                          ),
+                          child: Text(
+                            "Remove Image",
+                            style: TextStyle(color: Colors.white),
+                          ),
                         ),
-                        child: Text(
-                          "Remove Image",
-                          style: TextStyle(color: Colors.white),
+                      ),
+
+                    // Blog content
+                    BlogContentTextFieldBottomSheet(
+                      validator: (value) =>
+                          _validateField(value, 'Blog content'),
+                      controller: _blogContentController,
+                      hintText: "Blog content",
+                    ),
+                    SizedBox(height: height * 0.02),
+
+                    // Submit button
+                    GestureDetector(
+                      onTap: _isLoading ? null : _addToBlogList,
+                      child: Container(
+                        width: width * 0.6,
+                        height: height * 0.06,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: _isLoading
+                              ? Colors.grey
+                              : const Color.fromARGB(255, 32, 73, 70),
+                        ),
+                        child: Center(
+                          child: _isLoading
+                              ? SizedBox(
+                                  width: 20,
+                                  height: 20,
+                                  child: CircularProgressIndicator(
+                                    color: Color(0xFFecf39e),
+                                    strokeWidth: 2,
+                                  ),
+                                )
+                              : Text(
+                                  "Done",
+                                  style: TextStyle(
+                                    color: const Color(0xFFd9d9d9),
+                                    fontSize: 22,
+                                  ),
+                                ),
                         ),
                       ),
                     ),
-
-                  // Text field for blog content
-                  BlogContentTextFieldBottomSheet(
-                    validator: (value) =>
-                        _validateField(value, 'Blog content'), // Add validator
-                    controller: _blogContentController,
-                    hintText: "Blog content",
-                  ),
-                  SizedBox(height: height * 0.02),
-                  GestureDetector(
-                    onTap: _isLoading
-                        ? null
-                        : _addToBlogList, // Disable when loading
-                    child: Container(
-                      width: width * 0.6,
-                      height: height * 0.06,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: _isLoading
-                            ? Colors.grey
-                            : Color(0xFF606c38), // Grey when loading
-                      ),
-                      child: Center(
-                        child: _isLoading
-                            ? SizedBox(
-                                width: 20,
-                                height: 20,
-                                child: CircularProgressIndicator(
-                                  color: Color(0xFFecf39e),
-                                  strokeWidth: 2,
-                                ),
-                              )
-                            : Text(
-                                "Done",
-                                style: TextStyle(
-                                  color: Color(0xFFecf39e),
-                                  fontSize: 22,
-                                ),
-                              ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: height * 0.02),
-                ],
+                    SizedBox(height: height * 0.04), // Extra bottom padding
+                  ],
+                ),
               ),
             ),
           ),
@@ -301,57 +286,3 @@ class _AddBlogBottomSheetState extends State<AddBlogBottomSheet> {
     );
   }
 }
-
-/**
- * 
- *     // Elevated button to add an image
-                // ElevatedButton(
-                //   onPressed: () {
-                //     setState(() {
-                //       showDialog(
-                //         context: context,
-                //         builder: (context) => AlertDialog(
-                //           title: Text(
-                //             'Pick an image',
-                //             style: TextStyle(color: Color(0xFF606c38)),
-                //           ),
-                //           content: Text(
-                //             'Pick image to show in your blog post.',
-                //             style: TextStyle(color: Color(0xFF606c38)),
-                //           ),
-                //           backgroundColor: Color(0xFFecf39e),
-                //           actions: [
-                //             ElevatedButton(
-                //               onPressed: () async {
-                //                 File? image =
-                //                     await ImageHelper.pickImageFromCamera();
-                //               },
-                //               child: const Text("Add image from camera"),
-                //             ),
-                //             ElevatedButton(
-                //               onPressed: () async {
-                //                 File? image =
-                //                     await ImageHelper.pickImageFromGallery();
-                //               },
-                //               child: const Text("Add image from gallery"),
-                //             ),
-                //             // TextButton(
-                //             //   onPressed: () => Navigator.of(context).pop(),
-                //             //   child: Text(
-                //             //     'OK',
-                //             //     style: TextStyle(
-                //             //       color: Color.fromARGB(255, 27, 45, 7),
-                //             //     ),
-                //             //   ),
-                //             // ),
-                //           ],
-                //         ),
-                //       );
-                //     });
-                //   },
-                //   child: const Text("Add an image"),
-                // ),
-                
-             
- * 
- */

@@ -10,11 +10,11 @@ class FormFieldBottomSheet extends StatelessWidget {
   final String? Function(String?)? validator;
   final Function(String?)? onFieldSubmitted;
 
-  FormFieldBottomSheet({
+  const FormFieldBottomSheet({
     super.key,
     this.cursorColor = const Color(0xFF90a955),
     required this.hintText,
-    this.hintStyleColor = const Color(0xFF283618),
+    this.hintStyleColor = const Color.fromARGB(255, 32, 73, 70),
     required this.fontSize,
     required this.fontWeight,
     required this.controller,
@@ -33,7 +33,8 @@ class FormFieldBottomSheet extends StatelessWidget {
       width: width * 0.9,
       height: height * 0.06,
       decoration: BoxDecoration(
-        color: Color.fromARGB(255, 226, 234, 134),
+        color: const Color(0xFFd9d9d9),
+        // Color.fromARGB(255, 226, 234, 134),
         borderRadius: BorderRadius.circular(10),
       ),
       child: TextFormField(

@@ -21,7 +21,8 @@ class BlogContentTextFieldBottomSheet extends StatelessWidget {
       height: height * 0.2,
       padding: EdgeInsets.only(left: 10),
       decoration: BoxDecoration(
-        color: Color.fromARGB(255, 226, 234, 134),
+        color: const Color(0xFFd9d9d9),
+        // Color.fromARGB(255, 226, 234, 134),
         borderRadius: BorderRadius.circular(10),
       ),
       child: SingleChildScrollView(
@@ -36,7 +37,8 @@ class BlogContentTextFieldBottomSheet extends StatelessWidget {
                 hintText: hintText,
                 border: InputBorder.none,
                 hintStyle: TextStyle(
-                  color: const Color(0xFF283618),
+                  color: const Color.fromARGB(255, 32, 73, 70),
+                  // const Color(0xFF283618),
                   fontSize: 18,
                   fontWeight: FontWeight.w800,
                 ),

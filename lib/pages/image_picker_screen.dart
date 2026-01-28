@@ -14,7 +14,6 @@ class ImagePickerScreen extends StatefulWidget {
 class _ImagePickerScreenState extends State<ImagePickerScreen> {
   File? selectedImage;
 
-
   // Method to pick image from camera
   Future<void> _pickImageFromCamera() async {
     try {
@@ -61,26 +60,63 @@ class _ImagePickerScreenState extends State<ImagePickerScreen> {
   void _showImagePickerDialog() {
     showDialog(
       context: context,
+      animationStyle: AnimationStyle(
+        curve: Curves.easeOutBack, // Nice bounce effect at the end
+        duration: Duration(milliseconds: 400),
+        reverseCurve: Curves.easeInBack, // Exit animation
+        reverseDuration: Duration(milliseconds: 300),
+      ),
       builder: (context) => AlertDialog(
         title: Text(
           'Pick an image',
-          style: TextStyle(color: Color(0xFF606c38)),
+          style: TextStyle(
+            color: const Color.fromARGB(255, 32, 73, 70),
+            // const Color(0xFFffffff),
+            //  Color(0xFF606c38),
+          ),
         ),
         content: Text(
           'Pick image to show in your blog post.',
-          style: TextStyle(color: Color(0xFF606c38)),
+          style: TextStyle(
+            color: const Color.fromARGB(255, 32, 73, 70),
+            // const Color.fromARGB(255, 32, 73, 70),const Color(0xFFffffff),
+
+            // Color(0xFF606c38),
+          ),
         ),
-        backgroundColor: Color(0xFFecf39e),
+        backgroundColor: const Color(0xFFd9d9d9),
+        //  Color(0xFFecf39e),
         actions: [
           ElevatedButton(
             onPressed: _pickImageFromCamera,
-            style: ElevatedButton.styleFrom(backgroundColor: Color(0xFF606c38)),
-            child: Text("Camera", style: TextStyle(color: Color(0xFFecf39e))),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color.fromARGB(255, 32, 73, 70),
+
+              // Color(0xFF606c38)
+            ),
+            child: Text(
+              "Camera",
+              style: TextStyle(
+                color: const Color(0xFFffffff),
+
+                // Color(0xFFecf39e),
+              ),
+            ),
           ),
           ElevatedButton(
             onPressed: _pickImageFromGallery,
-            style: ElevatedButton.styleFrom(backgroundColor: Color(0xFF606c38)),
-            child: Text("Gallery", style: TextStyle(color: Color(0xFFecf39e))),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color.fromARGB(255, 32, 73, 70),
+
+              // Color(0xFF606c38),
+            ),
+            child: Text(
+              "Gallery",
+              style: TextStyle(
+                color: const Color(0xFFffffff),
+                // Color(0xFFecf39e),
+              ),
+            ),
           ),
         ],
       ),
@@ -99,7 +135,7 @@ class _ImagePickerScreenState extends State<ImagePickerScreen> {
         borderRadius: BorderRadius.circular(10),
         color: selectedImage != null
             ? Colors.transparent
-            : Color.fromARGB(255, 226, 234, 134),
+            : const Color(0xFFd9d9d9),
         border: selectedImage != null
             ? null
             : Border.all(color: Color(0xFF606c38)),
@@ -140,7 +176,8 @@ class _ImagePickerScreenState extends State<ImagePickerScreen> {
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.w700,
-                    color: const Color(0xFF283618),
+                    color: const Color.fromARGB(255, 32, 73, 70),
+                    // const Color(0xFF283618),
                   ),
                 ),
               ),
@@ -148,55 +185,3 @@ class _ImagePickerScreenState extends State<ImagePickerScreen> {
     );
   }
 }
-
-/***
- * 
- *     // Scaffold(
-    //   appBar: AppBar(title: Text('Image Picker')),
-    //   body:
-    //   Center(
-    //     child: Column(
-    //       mainAxisAlignment: MainAxisAlignment.center,
-    //       children: [
-    //         // Display selected image
-    //         _selectedImage != null
-    //             ? Image.file(
-    //                 _selectedImage!,
-    //                 height: 300,
-    //                 width: 300,
-    //                 fit: BoxFit.cover,
-    //               )
-    //             : Container(
-    //                 height: 300,
-    //                 width: 300,
-    //                 color: Colors.grey[300],
-    //                 child: Icon(
-    //                   Icons.image,
-    //                   size: 100,
-    //                   color: Colors.grey[600],
-    //                 ),
-    //               ),
-
-    //         SizedBox(height: 20),
-
-    //         // Buttons
-    //         // ElevatedButton.icon(
-    //         //   onPressed: _pickImageFromGallery,
-    //         //   icon: Icon(Icons.photo_library),
-    //         //   label: Text('Pick from Gallery'),
-    //         // ),
-
-    //         // SizedBox(height: 10),
-
-    //         // ElevatedButton.icon(
-    //         //   onPressed: _pickImageFromCamera,
-    //         //   icon: Icon(Icons.camera_alt),
-    //         //   label: Text('Take a Photo'),
-    //         // ),
-    //       ],
-    //     ),
-    //   ),
-    // );
- * 
- * 
- */

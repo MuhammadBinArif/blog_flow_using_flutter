@@ -29,7 +29,8 @@ class _AddBlogContainerState extends State<AddBlogContainer> {
         },
         child: Card(
           elevation: 5,
-          color: Color.fromARGB(255, 69, 93, 42),
+          color: const Color(0xFF183a37),
+          // Color.fromARGB(255, 69, 93, 42),
           child: Container(
             margin: EdgeInsets.all(4),
             width: width * 0.89,
@@ -40,13 +41,15 @@ class _AddBlogContainerState extends State<AddBlogContainer> {
                 style: BorderStyle.solid,
                 strokeAlign: BorderSide.strokeAlignInside,
               ),
-              color: Color(0xFFecf39e),
+              color: const Color(0xFFd9d9d9),
+              // Color(0xFFecf39e),
             ),
             child: Center(
               child: Text(
                 "Click to add a blog",
                 style: TextStyle(
-                  color: Color(0xFF283618),
+                  color: Color(0xFF183a37),
+                  // Color(0xFF283618),
                   fontSize: 25,
                   fontWeight: FontWeight.bold,
                 ),
@@ -58,23 +61,3 @@ class _AddBlogContainerState extends State<AddBlogContainer> {
     );
   }
 }
-
-
-// GestureDetector(
-              //   child: Container(
-              //     // margin: EdgeInsets.only(top: 5, bottom: 5, left: 40, right: 50),
-              //     width: width * 0.4,
-              //     height: height * 0.04,
-              //     decoration: BoxDecoration(
-              //       color: Color(0xFF283618),
-              //       borderRadius: BorderRadius.circular(10),
-              //     ),
-
-              //     child: Center(
-              //       child: const Text(
-              //         "Click to add a blog",
-              //         style: TextStyle(color: Color(0xFFecf39e)),
-              //       ),
-              //     ),
-              //   ),
-              // ),

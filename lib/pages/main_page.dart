@@ -30,39 +30,62 @@ class _MainPageState extends State<MainPage> {
     final blogProvider = Provider.of<BlogProvider>(context);
 
     return Scaffold(
-      backgroundColor: Color(0xFF90a955),
+      backgroundColor: const Color(0xFFffffff),
+      //  Color(0xFF3c6e71),
+
+      //  Color(0xFF90a955),
       appBar: AppBar(
         title: const Text(
           "𝔅𝔩𝔬𝔤𝔰 𝔄𝔭𝔭",
           style: TextStyle(
             fontSize: 30,
             fontWeight: FontWeight.bold,
-            color: Color(0xFFecf39e),
+            color: Color(0xFFd9d9d9),
+            // Color(0xFFecf39e),
           ),
         ),
         centerTitle: true,
         actions: [
           IconButton(
-            icon: Icon(Icons.menu, color: Color(0xFFecf39e)),
+            icon: Icon(
+              Icons.menu,
+              color: const Color(0xFFd9d9d9),
+              // const Color(0xFFd9d9d9),
+            ),
             onPressed: () async {
               await showDialog(
                 context: context,
                 builder: (context) => AlertDialog(
                   title: Text(
                     'Information',
-                    style: TextStyle(color: Color(0xFF606c38)),
+                    style: TextStyle(
+                      color: const Color(0xFFffffff),
+                      // const Color(0xFFd9d9d9),
+                      // Color(0xFF606c38),
+                    ),
                   ),
                   content: Text(
                     'This is an important information dialog.',
-                    style: TextStyle(color: Color(0xFF606c38)),
+                    style: TextStyle(
+                      color: const Color(0xFFffffff),
+                      // Color(0xFF606c38),
+                    ),
                   ),
-                  backgroundColor: Color(0xFFecf39e),
+                  backgroundColor: const Color.fromARGB(255, 32, 73, 70),
+                  // const Color(0xFFffffff),
+                  // Color(0xFFecf39e),
                   actions: [
                     TextButton(
                       onPressed: () => Navigator.of(context).pop(),
                       child: Text(
                         'OK',
-                        style: TextStyle(color: Color.fromARGB(255, 27, 45, 7)),
+                        style: TextStyle(
+                          color: const Color(0xFFffffff),
+                          fontSize: 20,
+                          fontWeight: FontWeight.w500,
+
+                          // Color.fromARGB(255, 27, 45, 7)
+                        ),
                       ),
                     ),
                   ],
@@ -72,16 +95,22 @@ class _MainPageState extends State<MainPage> {
                 SnackBar(
                   content: Text(
                     'Dialog closed',
-                    style: TextStyle(color: Color(0xFFecf39e)),
+                    style: TextStyle(
+                      color: const Color(0xFFffffff),
+
+                      // Color(0xFFecf39e)
+                    ),
                   ),
                   duration: Duration(seconds: 2),
-                  backgroundColor: Color(0xFF606c38),
+                  backgroundColor: const Color.fromARGB(255, 32, 73, 70),
+                  // Color(0xFF606c38),
                 ),
               );
             },
           ),
         ],
-        backgroundColor: Color(0xFF283618),
+        backgroundColor: Color(0xFF183a37),
+        // Color(0xFF283618),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -93,12 +122,7 @@ class _MainPageState extends State<MainPage> {
               itemCount: blogProvider.blogs.length,
               itemBuilder: (context, index) {
                 final blog = blogProvider.blogs[index];
-                return MyBlogCard(
-                  blog: blog,
-                  // title: blog.title,
-                  // subtitle: blog.subtitle,
-                  // authorName: blog.authorName,
-                );
+                return MyBlogCard(blog: blog);
               },
             ),
           ],
@@ -106,10 +130,14 @@ class _MainPageState extends State<MainPage> {
       ),
       bottomNavigationBar: NavigationBar(
         labelTextStyle: WidgetStatePropertyAll(
-          TextStyle(color: Color(0xFFecf39e)),
+          TextStyle(
+            color: const Color(0xFFd9d9d9),
+            // Color(0xFFecf39e),
+          ),
         ),
         selectedIndex: currentIndex,
-        indicatorColor: Color(0xFF606c38),
+        indicatorColor: const Color(0xFFd9d9d9),
+        //  Color(0xFF606c38),
         onDestinationSelected: (index) {
           setState(() => currentIndex = index);
 
@@ -126,27 +154,40 @@ class _MainPageState extends State<MainPage> {
         // onDestinationSelected: (index) => setState(() => currentIndex = index),
         destinations: [
           NavigationDestination(
-            icon: Icon(Icons.home, color: Color(0xFFfefae0), size: 30),
+            icon: Icon(
+              Icons.home,
+              color: const Color.fromARGB(255, 32, 73, 70),
+              size: 30,
+            ),
             label: "Home",
           ),
           NavigationDestination(
-            icon: Icon(Icons.search, color: Color(0xFFfefae0), size: 30),
+            icon: Icon(
+              Icons.search,
+              color: const Color.fromARGB(255, 32, 73, 70),
+              size: 30,
+            ),
             label: "Search",
           ),
           NavigationDestination(
-            icon: Icon(Icons.book, color: Color(0xFFfefae0), size: 30),
+            icon: Icon(
+              Icons.book,
+              color: const Color.fromARGB(255, 32, 73, 70),
+              size: 30,
+            ),
             label: "Favourite",
           ),
-          // NavigationDestination(
-          //   icon: Icon(Icons.book, color: Color(0xFFfefae0), size: 30),
-          //   label: "Favourite",
-          // ),
           NavigationDestination(
-            icon: Icon(Icons.person, color: Color(0xFFfefae0), size: 30),
+            icon: Icon(
+              Icons.person,
+              color: const Color.fromARGB(255, 32, 73, 70),
+              size: 30,
+            ),
             label: "Profile",
           ),
         ],
-        backgroundColor: Color(0xFF283618),
+        backgroundColor: const Color(0xFF183a37),
+        // Color(0xFF283618),
         elevation: 3,
         animationDuration: const Duration(milliseconds: 500),
       ),

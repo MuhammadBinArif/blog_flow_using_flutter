@@ -1,5 +1,5 @@
 import 'package:blog_app_flutter/model/blog_model.dart';
-import 'package:blog_app_flutter/pages/secondary_page.dart';
+import 'package:blog_app_flutter/pages/detail_page.dart';
 import 'package:flutter/material.dart';
 
 class MyBlogCard extends StatelessWidget {
@@ -25,7 +25,10 @@ class MyBlogCard extends StatelessWidget {
       padding: EdgeInsets.all(10),
       child: Card(
         elevation: 7,
-        color: Color(0xFFecf39e),
+        color: const Color(0xFFd9d9d9),
+        // Color(0xFFefd6ac),
+        // Color(0xFFa5c5dd),
+        // Color(0xFFecf39e),
         //  Color(0xFFfefae0),
         //  Colors.white,
         margin: EdgeInsets.only(top: 15),
@@ -63,7 +66,7 @@ class MyBlogCard extends StatelessWidget {
                   // print('Blog title: ${blog.title}');
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (context) => SecondaryPage(blog: blog),
+                      builder: (context) => DetailPage(blog: blog),
                     ),
                   );
                 },
@@ -72,7 +75,9 @@ class MyBlogCard extends StatelessWidget {
                   height: height * 0.04,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
-                    color: Color(0xFF283618),
+                    color: const Color(0xFF183a37),
+                    // Color(0xFF63a0d0),
+                    // Color(0xFF283618),
                     // boxShadow: [BoxShadow(blurRadius: 1)],
                     // Color(0xFF468faf),
                     // Color(0xFF014f86),
@@ -84,7 +89,7 @@ class MyBlogCard extends StatelessWidget {
                     child: const Text(
                       "Read more",
                       style: TextStyle(
-                        color: Color(0xFFecf39e),
+                        color: const Color(0xFFd9d9d9),
                         //  Color(0xFFfefae0),
                         // Colors.white
                       ),

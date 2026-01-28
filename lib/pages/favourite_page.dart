@@ -14,10 +14,25 @@ class FavouritePage extends StatelessWidget {
     final groupedBlogs = blogProvider.getBlogsGroupedByAuthor();
 
     return Scaffold(
-      backgroundColor: Color(0xFF90a955),
+      backgroundColor: const Color(0xFFffffff),
+      // Color(0xFF90a955),
       appBar: AppBar(
-        title: Text("Favourite Authors"),
-        backgroundColor: Color(0xFF283618),
+        leading: GestureDetector(
+          onTap: () {
+            Navigator.pop(context);
+          },
+          child: Icon(
+            Icons.arrow_back,
+            color: const Color(0xFFffffff),
+            //  Color(0xFFd9d9d9),
+          ),
+        ),
+        title: Text(
+          "Favourite Authors",
+          style: TextStyle(color: const Color(0xFFffffff)),
+        ),
+        backgroundColor: const Color.fromARGB(255, 32, 73, 70),
+        //  Color(0xFF283618),
       ),
       body: ListView.builder(
         itemCount: groupedBlogs.length,
@@ -39,7 +54,8 @@ class FavouritePage extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
-                    color: Colors.white,
+                    color: const Color.fromARGB(255, 32, 73, 70),
+                    // Colors.white,
                   ),
                 ),
               ),
@@ -52,7 +68,13 @@ class FavouritePage extends StatelessWidget {
                   return MyBlogCard(blog: blog);
                 },
               ),
-              Divider(height: 40, thickness: 2, color: Colors.grey[300]),
+              Divider(
+                height: 40,
+                thickness: 2,
+                color: const Color.fromARGB(255, 32, 73, 70),
+
+                //  Colors.grey[300]
+              ),
             ],
           );
         },

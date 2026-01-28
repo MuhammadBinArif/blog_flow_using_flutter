@@ -25,7 +25,10 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => BlogProvider(), lazy: false),
         ChangeNotifierProvider(create: (_) => AuthProvider()),
       ],
-      child: MaterialApp(home: const AuthenticationScreen()),
+      child: MaterialApp(
+        home: const AuthenticationScreen(),
+        debugShowCheckedModeBanner: false,
+      ),
     );
   }
 }

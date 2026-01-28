@@ -1,94 +1,3 @@
-// import 'package:blog_app_flutter/pages/main_page.dart';
-// import 'package:blog_app_flutter/services/firebase_authentication_service.dart';
-// import 'package:flutter/material.dart';
-// import 'package:provider/provider.dart';
-
-// // 1. AUTHENTICATION PROVIDER - Manages authentication state
-// class AuthProvider extends ChangeNotifier {
-//   bool isLoading = false;
-//   String? errorMessage;
-//   bool isEmailVerified = false;
-
-//   final FirebaseAuthenticationService _authService =
-//       FirebaseAuthenticationService();
-
-//   Future<bool> login(String email, String password) async {
-//     isLoading = true;
-//     errorMessage = null;
-//     notifyListeners();
-
-//     try {
-//       String? error = await _authService.signIn(email, password);
-//       if (error != null) {
-//         errorMessage = error;
-//         isLoading = false;
-//         notifyListeners();
-//         return false;
-//       }
-
-//       final user = _authService.currentUser;
-//       if (user != null && !user.emailVerified) {
-//         errorMessage = "Please verify your email before logging in.";
-//         isLoading = false;
-//         notifyListeners();
-//         return false;
-//       }
-
-//       isEmailVerified = user?.emailVerified ?? false;
-//       isLoading = false;
-//       notifyListeners();
-//       return true;
-//     } catch (e) {
-//       errorMessage = "Login failed: $e";
-//       isLoading = false;
-//       notifyListeners();
-//       return false;
-//     }
-//   }
-
-//   Future<bool> signup(String email, String password) async {
-//     isLoading = true;
-//     errorMessage = null;
-//     notifyListeners();
-
-//     try {
-//       String? error = await _authService.signUp(email, password);
-//       if (error != null) {
-//         errorMessage = error;
-//         isLoading = false;
-//         notifyListeners();
-//         return false;
-//       }
-
-//       final user = _authService.currentUser;
-//       isEmailVerified = user?.emailVerified ?? false;
-//       isLoading = false;
-//       notifyListeners();
-//       return true;
-//     } catch (e) {
-//       errorMessage = "Sign up failed: $e";
-//       isLoading = false;
-//       notifyListeners();
-//       return false;
-//     }
-//   }
-
-//   Future<void> sendVerificationEmail() async {
-//     try {
-//       await _authService.sendEmailVerification();
-//     } catch (e) {
-//       errorMessage = "Failed to send verification email: $e";
-//       notifyListeners();
-//       rethrow;
-//     }
-//   }
-
-//   void clearError() {
-//     errorMessage = null;
-//     notifyListeners();
-//   }
-// }
-
 import 'package:blog_app_flutter/pages/main_page.dart';
 import 'package:blog_app_flutter/providers/auth_provider.dart';
 import 'package:flutter/material.dart';
@@ -173,6 +82,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
     final authProvider = context.watch<AuthProvider>();
 
     return Scaffold(
+      backgroundColor: const Color(0xFFffffff),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -181,16 +91,25 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
             children: [
               const Text(
                 "Blog App",
-                style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  fontSize: 32,
+                  fontWeight: FontWeight.bold,
+                  color: Color.fromARGB(255, 32, 73, 70),
+                ),
               ),
               const SizedBox(height: 48),
               TextField(
                 controller: _emailController,
                 keyboardType: TextInputType.emailAddress,
                 decoration: const InputDecoration(
+                  fillColor: Color(0xFFd9d9d9),
                   labelText: "Email",
+                  labelStyle: TextStyle(color: Color.fromARGB(255, 32, 73, 70)),
                   border: OutlineInputBorder(),
-                  prefixIcon: Icon(Icons.email),
+                  prefixIcon: Icon(
+                    Icons.email,
+                    color: Color.fromARGB(255, 32, 73, 70),
+                  ),
                 ),
               ),
               const SizedBox(height: 16),
@@ -198,14 +117,20 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                 controller: _passwordController,
                 obscureText: _obscurePassword,
                 decoration: InputDecoration(
+                  fillColor: Color(0xFFd9d9d9),
                   labelText: "Password",
+                  labelStyle: TextStyle(color: Color.fromARGB(255, 32, 73, 70)),
                   border: const OutlineInputBorder(),
-                  prefixIcon: const Icon(Icons.lock),
+                  prefixIcon: const Icon(
+                    Icons.lock,
+                    color: Color.fromARGB(255, 32, 73, 70),
+                  ),
                   suffixIcon: IconButton(
                     icon: Icon(
                       _obscurePassword
                           ? Icons.visibility
                           : Icons.visibility_off,
+                      color: const Color.fromARGB(255, 32, 73, 70),
                     ),
                     onPressed: _togglePasswordVisibility,
                   ),
@@ -242,10 +167,23 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                 width: double.infinity,
                 height: 50,
                 child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color.fromARGB(255, 32, 73, 70),
+                    // const Color.fromARGB(255, 32, 73, 70),
+                  ),
                   onPressed: authProvider.isLoading ? null : _handleAuth,
                   child: authProvider.isLoading
-                      ? const CircularProgressIndicator()
-                      : Text(_isLogin ? "Login" : "Sign Up"),
+                      ? const CircularProgressIndicator(
+                          color: Color.fromARGB(255, 32, 73, 70),
+                        )
+                      : Text(
+                          _isLogin ? "Login" : "Sign Up",
+                          style: TextStyle(
+                            color: const Color(0xFFd9d9d9),
+
+                            // const Color(0xFFffffff),
+                          ),
+                        ),
                 ),
               ),
 
@@ -258,6 +196,9 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                   _isLogin
                       ? "Don't have an account? Sign Up"
                       : "Already have an account? Login",
+                  style: TextStyle(
+                    color: const Color.fromARGB(255, 32, 73, 70),
+                  ),
                 ),
               ),
 
@@ -278,123 +219,3 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
     );
   }
 }
-
-  // import 'package:blog_app_flutter/pages/main_page.dart';
-  // import 'package:blog_app_flutter/services/firebase_authentication_service.dart';
-  // import 'package:flutter/material.dart';
-
-  // class AuthenticationScreen extends StatefulWidget {
-  //   const AuthenticationScreen({super.key});
-
-  //   @override
-  //   State<AuthenticationScreen> createState() => _AuthenticationScreenState();
-  // }
-
-  // class _AuthenticationScreenState extends State<AuthenticationScreen> {
-  //   @override
-  //   Widget build(BuildContext context) {
-  //     var size = MediaQuery.of(context).size;
-  //     var height = size.height;
-
-  //     final FirebaseAuthenticationService _authenticationService =
-  //         FirebaseAuthenticationService();
-  //     final TextEditingController _emailController = TextEditingController();
-  //     final TextEditingController _passwordController = TextEditingController();
-
-  //     String? error;
-  //     bool _isLogin = false; // Toggle between login and signup
-
-  //     // Error handling
-  //     void _showError(String message) {
-  //       ScaffoldMessenger.of(
-  //         context,
-  //       ).showSnackBar(SnackBar(content: Text(message)));
-  //     }
-
-  //     // Handle Login or Signup
-  //     void _submit() async {
-  //       String email = _emailController.text.trim();
-  //       String password = _passwordController.text.trim();
-
-  //       if (email.isEmpty || password.isEmpty) {
-  //         _showError("Please fill all the fields");
-  //         return;
-  //       }
-
-  //       if (_isLogin) {
-  //         // Login
-  //         error = await _authenticationService.signIn(email, password);
-  //       } else {
-  //         // Signup
-  //         error = await _authenticationService.signUp(email, password);
-  //       }
-
-  //       if (error != null) {
-  //         _showError(error!);
-  //       } else {
-  //         // Success go to Home Screen
-  //         Navigator.of(
-  //           context,
-  //         ).pushReplacement(MaterialPageRoute(builder: (context) => MainPage()));
-  //       }
-  //     }
-
-  //     return Scaffold(
-  //       backgroundColor: Color(0xFF90a955),
-  //       appBar: AppBar(
-  //         title: Text(_isLogin ? "Login" : "Sign up"),
-  //         actions: [
-  //           IconButton(
-  //             icon: Icon(_isLogin ? Icons.person_add : Icons.login),
-  //             onPressed: () {
-  //               setState(() {
-  //                 _isLogin = !_isLogin;
-  //               });
-  //             },
-  //           ),
-  //         ],
-  //       ),
-  //       body: Padding(
-  //         padding: EdgeInsets.all(10),
-  //         child: Column(
-  //           mainAxisAlignment: MainAxisAlignment.center,
-  //           children: [
-  //             // Email field
-  //             TextField(
-  //               controller: _emailController,
-  //               keyboardType: TextInputType.emailAddress,
-  //               decoration: InputDecoration(
-  //                 label: const Text("Email"),
-  //                 border: OutlineInputBorder(),
-  //                 prefixIcon: Icon(Icons.email),
-  //               ),
-  //             ),
-
-  //             SizedBox(height: height * 0.1),
-  //             // Password field
-  //             TextField(
-  //               controller: _passwordController,
-  //               obscureText: true,
-  //               decoration: InputDecoration(
-  //                 label: const Text("Password"),
-  //                 border: OutlineInputBorder(),
-  //                 prefixIcon: Icon(Icons.password),
-  //               ),
-  //             ),
-  //             ElevatedButton(
-  //               onPressed: _submit,
-  //               child: Text(_isLogin ? "Login" : "Sign Up"),
-  //             ),
-  //             TextButton(
-  //               onPressed: () {},
-  //               child: Text(
-  //                 _isLogin ? "Already have an account?" : "Register an account",
-  //               ),
-  //             ),
-  //           ],
-  //         ),
-  //       ),
-  //     );
-  //   }
-  // }
-
