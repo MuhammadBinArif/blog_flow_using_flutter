@@ -777,8 +777,8 @@
     }
   ],
   "generator": "pub",
-  "generatorVersion": "3.10.4",
+  "generatorVersion": "3.10.8",
   "flutterRoot": "file:///opt/flutter",
-  "flutterVersion": "3.38.5",
+  "flutterVersion": "3.38.9",
   "pubCache": "file:///home/parrotos/.pub-cache"
 }
